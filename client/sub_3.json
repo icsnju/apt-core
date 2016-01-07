@@ -1,0 +1,14 @@
+{
+	"FrameKind":"robotium",
+		"Frame":{
+			"AppPath":"TouchMe.apk",
+			"TestPath":"TouchTest_1.apk"
+		},
+		"FilterKind":"specify_devices",
+		"Filter":{
+			"IdList":["Coolpad5891-a174941b","16f0ba2c","267d5539"],
+			"Replaceable":true
+		}
+}
+~                                                                                                      
+~                 

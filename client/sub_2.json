@@ -1,0 +1,13 @@
+{
+	"FrameKind":"install",
+		"Frame":{
+			"AppPath":"TouchMe.apk",
+			"PkgName":"com.tc.touchme"
+		},
+		"FilterKind":"specify_devices",
+		"Filter":{
+			"IdList":["*"],
+			"Replaceable":true
+		}
+}
+

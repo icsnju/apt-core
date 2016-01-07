@@ -1,0 +1,2 @@
+rm -rf job
+./master
