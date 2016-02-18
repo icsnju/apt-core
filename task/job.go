@@ -1,7 +1,7 @@
 package task
 
 import (
-	"nata/framework"
+	"apsaras/framework"
 	"time"
 )
 
@@ -19,6 +19,14 @@ type Job struct {
 
 type JobMap struct {
 	Map map[string]Job
+}
+
+type JobBrief struct {
+	JobId      string
+	StartTime  time.Time
+	FrameKind  string
+	FilterKind string
+	Status     string
 }
 
 type SubJob struct {

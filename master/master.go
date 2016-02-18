@@ -1,16 +1,16 @@
 package main
 
 import (
+	"apsaras/andevice"
+	"apsaras/framework"
+	"apsaras/node"
+	"apsaras/task"
+	"apsaras/tools"
 	"bufio"
 	"encoding/gob"
 	"encoding/json"
 	"fmt"
 	"math/rand"
-	"nata/andevice"
-	"nata/framework"
-	"nata/node"
-	"nata/task"
-	"nata/tools"
 	"net"
 	"os"
 	"path"
@@ -142,7 +142,7 @@ func main() {
 			slavesLock.Unlock()
 			//it is a slave, handle it
 			go handleSlave(conn)
-		} else if me == tools.CHECKJOBS || me == tools.CHECKSLAVES {
+		} else if me == tools.CHECKJOBS || me == tools.CHECKSLAVES || me == tools.CHECKDEVICES {
 			go handleClient(conn, me)
 		} else if me == tools.SUBJOB {
 			go handleSubJob(conn)
@@ -249,15 +249,43 @@ func handleClient(conn net.Conn, kind string) {
 	defer conn.Close()
 	encoder := gob.NewEncoder(conn)
 	if kind == tools.CHECKJOBS {
+		//var jm task.JobMap
+		//jm.Map = jobMap
+		//		err := encoder.Encode(jm)
+		//		if err != nil {
+		//			fmt.Println("Check jobs error!")
+		//			fmt.Println(err)
+		//		}
+		var jobs []task.JobBrief = make([]task.JobBrief, 0)
+
 		jobLock.Lock()
-		var jm task.JobMap
-		jm.Map = jobMap
-		err := encoder.Encode(jm)
-		if err != nil {
-			fmt.Println("Check jobs error!")
-			fmt.Println(err)
+		for _, jbif := range jobMap {
+			var temp task.JobBrief
+			temp.JobId = jbif.JobId
+			temp.StartTime = jbif.StartTime
+			temp.FrameKind = jbif.JobInfo.FrameKind
+			temp.FilterKind = jbif.JobInfo.FilterKind
+			if jbif.Finished {
+				temp.Status = "Finished"
+			} else {
+				temp.Status = "Running"
+			}
+			jobs = append(jobs, temp)
 		}
 		jobLock.Unlock()
+
+		jobjson, err := json.Marshal(jobs)
+		if err != nil {
+			fmt.Println("get jobs err!")
+			fmt.Println(err)
+			return
+		}
+
+		_, err = conn.Write([]byte(jobjson))
+		if err != nil {
+			fmt.Println(err)
+		}
+
 	} else if kind == tools.CHECKSLAVES {
 		slavesLock.Lock()
 		var sm node.SlaveMap
@@ -268,6 +296,28 @@ func handleClient(conn net.Conn, kind string) {
 			fmt.Println(err)
 		}
 		slavesLock.Unlock()
+	} else if kind == tools.CHECKDEVICES {
+		var devices []andevice.DeviceInfo = make([]andevice.DeviceInfo, 0)
+
+		slavesLock.Lock()
+		for _, slave := range slavesMap {
+			for _, device := range slave.DeviceStates {
+				devices = append(devices, device.Info)
+			}
+		}
+		slavesLock.Unlock()
+
+		devjson, err := json.Marshal(devices)
+		if err != nil {
+			fmt.Println("get devices err!")
+			fmt.Println(err)
+			return
+		}
+
+		_, err = conn.Write([]byte(devjson))
+		if err != nil {
+			fmt.Println(err)
+		}
 	}
 }
 
@@ -531,60 +581,60 @@ func updateJobState() {
 
 		//remove finished jobs
 		for _, id := range fiJobs {
-			djob, ex := jobMap[id]
+			_, ex := jobMap[id]
 			if ex {
-				jp := path.Join(JOBPATH, id+JSON)
-				jobFile, err1 := os.Create(jp)
-				if err1 != nil {
-					fmt.Println("updateJobState err!")
-					fmt.Println(err1)
-					continue
-				}
+				//				jp := path.Join(JOBPATH, id+JSON)
+				//				jobFile, err1 := os.Create(jp)
+				//				if err1 != nil {
+				//					fmt.Println("updateJobState err!")
+				//					fmt.Println(err1)
+				//					continue
+				//				}
 
-				var content string = ""
-				var sumRun int64 = 0
-				var sumAll int64 = 0
-				start := djob.StartTime
-				var mdevlist []string = make([]string, 0)
-				for _, ts := range djob.TaskMap {
-					sumRun += ts.FinishTime.Sub(ts.StartTime).Nanoseconds() / 1000000
-					sumAll += ts.FinishTime.Sub(start).Nanoseconds() / 1000000
-					mdevlist = append(mdevlist, ts.DeviceId)
-				}
-				countDev := strconv.Itoa(len(djob.TaskMap))
-				jobl := int64(len(djob.TaskMap))
-				sumRun = sumRun / jobl
-				sumAll = sumAll / jobl
+				//				var content string = ""
+				//				var sumRun int64 = 0
+				//				var sumAll int64 = 0
+				//				start := djob.StartTime
+				//				var mdevlist []string = make([]string, 0)
+				//				for _, ts := range djob.TaskMap {
+				//					sumRun += ts.FinishTime.Sub(ts.StartTime).Nanoseconds() / 1000000
+				//					sumAll += ts.FinishTime.Sub(start).Nanoseconds() / 1000000
+				//					mdevlist = append(mdevlist, ts.DeviceId)
+				//				}
+				//				countDev := strconv.Itoa(len(djob.TaskMap))
+				//				jobl := int64(len(djob.TaskMap))
+				//				sumRun = sumRun / jobl
+				//				sumAll = sumAll / jobl
 
-				sum1 := strconv.FormatInt(sumRun, 10)
-				sum2 := strconv.FormatInt(sumAll, 10)
+				//				sum1 := strconv.FormatInt(sumRun, 10)
+				//				sum2 := strconv.FormatInt(sumAll, 10)
 
-				content = sum1 + " " + sum2 + " " + countDev + "\n"
-				_, err := jobFile.Write([]byte(content))
+				//				content = sum1 + " " + sum2 + " " + countDev + "\n"
+				//				_, err := jobFile.Write([]byte(content))
 
-				if err != nil {
-					fmt.Println("updateJobState err!")
-					fmt.Println(err)
-					continue
-				}
+				//				if err != nil {
+				//					fmt.Println("updateJobState err!")
+				//					fmt.Println(err)
+				//					continue
+				//				}
 
-				devcon, err := json.Marshal(mdevlist)
-				if err != nil {
-					fmt.Println("updateJobState err!")
-					fmt.Println(err)
-					continue
-				}
+				//				devcon, err := json.Marshal(mdevlist)
+				//				if err != nil {
+				//					fmt.Println("updateJobState err!")
+				//					fmt.Println(err)
+				//					continue
+				//				}
 
-				_, err = jobFile.Write(devcon)
-				if err != nil {
-					fmt.Println("updateJobState err!")
-					fmt.Println(err)
-					continue
-				}
+				//				_, err = jobFile.Write(devcon)
+				//				if err != nil {
+				//					fmt.Println("updateJobState err!")
+				//					fmt.Println(err)
+				//					continue
+				//				}
 
-				fmt.Println("Job " + id + " finishd!")
-				jobFile.Sync()
-				jobFile.Close()
+				//				fmt.Println("Job " + id + " finishd!")
+				//				jobFile.Sync()
+				//				jobFile.Close()
 
 				delete(jobMap, id)
 			}

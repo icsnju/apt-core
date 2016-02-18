@@ -1,1 +1,5 @@
 .DS_Store
+master/master
+client/client
+slave/slave
+test/

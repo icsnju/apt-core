@@ -1,0 +1,3 @@
+share=/mnt/mfs/nata
+master=114.212.87.22:6666
+adb=/opt/android-sdk/platform-tools/adb

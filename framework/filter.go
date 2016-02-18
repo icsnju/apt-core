@@ -1,8 +1,8 @@
 package framework
 
 import (
+	"apsaras/andevice"
 	"math/rand"
-	"nata/andevice"
 	"time"
 )
 

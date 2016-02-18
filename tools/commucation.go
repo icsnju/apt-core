@@ -3,11 +3,12 @@ package tools
 import "time"
 
 const (
-	HIMASTER    = "himaster"
-	CHECKSLAVES = "slaves"
-	CHECKJOBS   = "jobs"
-	SUBJOB      = "subjob"
-	JOBSTATE    = "job"
+	HIMASTER     = "himaster"
+	CHECKSLAVES  = "slaves"
+	CHECKJOBS    = "jobs"
+	CHECKDEVICES = "devices"
+	SUBJOB       = "subjob"
+	JOBSTATE     = "job"
 
 	HEATBEAT = "heartbeat"
 	IMALIVE  = "imalive"
