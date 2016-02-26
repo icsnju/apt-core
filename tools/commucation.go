@@ -8,6 +8,7 @@ const (
 	CHECKJOBS    = "jobs"
 	CHECKDEVICES = "devices"
 	SUBJOB       = "subjob"
+	WEBSUBJOB    = "websubjob"
 	JOBSTATE     = "job"
 
 	HEATBEAT = "heartbeat"

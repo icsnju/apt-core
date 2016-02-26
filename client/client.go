@@ -16,8 +16,6 @@ import (
 	"path"
 	"strings"
 	"time"
-
-	"github.com/bitly/go-simplejson"
 )
 
 var serviceIP string
@@ -127,105 +125,10 @@ func subJob(conn *net.TCPConn, jsPath string) {
 
 	content, err := ioutil.ReadFile(jsPath)
 	tools.CheckError(err)
-	js, err := simplejson.NewJson(content)
-	tools.CheckError(err)
-	framekind, err := js.Get("FrameKind").String()
-	tools.CheckError(err)
-	filterkind, err := js.Get("FilterKind").String()
-	tools.CheckError(err)
 
-	var sj task.SubJob
-
-	switch framekind {
-	case framework.FRAME_ROBOT:
-		sj.FrameKind = framework.FRAME_ROBOT
-		var rf framework.RobotFrame
-
-		appPath, err1 := js.Get("Frame").Get("AppPath").String()
-		testPath, err2 := js.Get("Frame").Get("TestPath").String()
-		if err1 != nil || err2 != nil {
-			fmt.Println("Robotium framework error in json file! File path of App and Test are needed!")
-			return
-		}
-		rf.AppPath = appPath
-		rf.TestPath = testPath
-		sj.Frame = rf
-	case framework.FRAME_MONKEY:
-		sj.FrameKind = framework.FRAME_MONKEY
-		var mf framework.MonkeyFrame
-
-		appPath, err1 := js.Get("Frame").Get("AppPath").String()
-		argu, err2 := js.Get("Frame").Get("Argu").String()
-		pkg, err3 := js.Get("Frame").Get("PkgName").String()
-		if err1 != nil || err2 != nil || err3 != nil {
-			fmt.Println("MonkeyFrame error in json file! AppPath, Argu and PkgName are needed!")
-			return
-		}
-		mf.AppPath = appPath
-		mf.Argu = argu
-		mf.PkgName = pkg
-		sj.Frame = mf
-	case framework.FRAME_INSTALL:
-		sj.FrameKind = framework.FRAME_INSTALL
-		var inf framework.InstallFrame
-		appPath, err1 := js.Get("Frame").Get("AppPath").String()
-		pkg, err2 := js.Get("Frame").Get("PkgName").String()
-		if err1 != nil || err2 != nil {
-			fmt.Println("InstallFrame error in json file! File path of App and package are needed!")
-			return
-		}
-		inf.AppPath = appPath
-		inf.PkgName = pkg
-		sj.Frame = inf
-	default:
-		fmt.Println("Unknow Framework!")
-		return
-	}
-
-	switch filterkind {
-	case framework.FILTER_SPECIFYDEVICES:
-		sj.FilterKind = framework.FILTER_SPECIFYDEVICES
-		var filter framework.SpecifyDevFilter
-		idList, err1 := js.Get("Filter").Get("IdList").StringArray()
-		repable, err2 := js.Get("Filter").Get("Replaceable").Bool()
-		if err1 != nil || err2 != nil {
-			fmt.Println("SpecifyDevices filter error in json file! IdList and Replaceable are needed!")
-			return
-		}
-		filter.IdList = idList
-		filter.Replaceable = repable
-		sj.Filter = filter
-
-	case framework.FILTER_SPECIFYATTR:
-		sj.FilterKind = framework.FILTER_SPECIFYATTR
-		var filter framework.SpecifyAttrFilter
-		qt, err1 := js.Get("Filter").Get("Quantity").Int()
-		at, err2 := js.Get("Filter").Get("Attr").String()
-		vl, err3 := js.Get("Filter").Get("Value").String()
-		if err1 != nil || err2 != nil || err3 != nil {
-			fmt.Println("SpecifyAttr filter error in json file! Quantity, Attr and Value  are needed!")
-			return
-		}
-		filter.Attr = at
-		filter.Quantity = qt
-		filter.Value = vl
-		sj.Filter = filter
-
-	case framework.FILTER_COMPATIBILITY:
-		sj.FilterKind = framework.FILTER_COMPATIBILITY
-		var filter framework.CompatibilityFilter
-		qt, err1 := js.Get("Filter").Get("Quantity").Int()
-		dt, err2 := js.Get("Filter").Get("Dominate").String()
-		if err1 != nil || err2 != nil {
-			fmt.Println("Compatibility filter error in json file! Quantity, Dominate are needed!")
-			return
-		}
-		filter.Dominate = dt
-		filter.Quantity = qt
-		sj.Filter = filter
-
-	default:
-		fmt.Println("Unknow Filter!")
+	sj, err := task.ParserSubJobFromJson(content)
+	if err != nil {
+		fmt.Println(err)
 		return
 	}
 

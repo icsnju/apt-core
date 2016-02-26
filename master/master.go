@@ -144,8 +144,8 @@ func main() {
 			go handleSlave(conn)
 		} else if me == tools.CHECKJOBS || me == tools.CHECKSLAVES || me == tools.CHECKDEVICES {
 			go handleClient(conn, me)
-		} else if me == tools.SUBJOB {
-			go handleSubJob(conn)
+		} else if me == tools.SUBJOB || me == tools.WEBSUBJOB {
+			go handleSubJob(conn, me)
 		} else {
 			if strings.HasPrefix(me, "job:") {
 				terms := strings.Split(me, ":")
@@ -177,7 +177,7 @@ func handleJobQuery(conn net.Conn, jobId string) {
 }
 
 //handle sub job
-func handleSubJob(conn net.Conn) {
+func handleSubJob(conn net.Conn, kind string) {
 	defer conn.Close()
 	idLock.Lock()
 	mid := strconv.Itoa(jobid)
@@ -190,14 +190,31 @@ func handleSubJob(conn net.Conn) {
 		fmt.Println(err)
 	}
 
-	//read job information
-	conn.SetReadDeadline(time.Now().Add(tools.WAITFORDIA)) // set 2 minutes timeout
-	decoder := gob.NewDecoder(conn)
 	var subjob task.SubJob
-	err = decoder.Decode(&subjob)
-	if err != nil {
-		fmt.Println(err)
-		return
+	conn.SetReadDeadline(time.Now().Add(tools.WAITFORDIA)) // set 2 minutes timeout
+	if kind == tools.SUBJOB {
+		//read job information
+		decoder := gob.NewDecoder(conn)
+
+		err = decoder.Decode(&subjob)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+	} else {
+		message := make([]byte, 1024) // set maxium request length to 128KB to prevent flood attack
+		mLen, err := conn.Read(message)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		me := message[:mLen]
+		fmt.Println(string(me))
+		subjob, err = task.ParserSubJobFromJson(me)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
 	}
 
 	var job task.Job

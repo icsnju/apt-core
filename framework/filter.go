@@ -19,8 +19,7 @@ type FilterInterface interface {
 
 //Specify devices
 type SpecifyDevFilter struct {
-	IdList      []string
-	Replaceable bool
+	IdList []string
 }
 
 func (sd SpecifyDevFilter) GetDeviceSet(availDevs map[string]andevice.Device) []string {

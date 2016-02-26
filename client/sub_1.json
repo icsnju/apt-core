@@ -1,14 +1,14 @@
 {
 	"FrameKind":"monkey",
-		"Frame":{
-			"AppPath":"TouchMe.apk",
-			"PkgName":"com.tc.touchme",
-			"Argu":"-v 1"
-		},
-		"FilterKind":"specify_devices",
-		"Filter":{
-			"IdList":["*"],
-			"Replaceable":true
-		}
+	"Frame":{
+		"AppPath":"TouchMe.apk",
+		"PkgName":"com.tc.touchme",
+		"Argu":"-v 1"
+	},
+	"FilterKind":"specify_devices",
+	"Filter":{
+		"IdList":["*"],
+		"Replaceable":true
+	}
 }
 

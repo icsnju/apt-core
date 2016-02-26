@@ -33,8 +33,8 @@ func (mf MonkeyFrame) TaskExecutor(jobId, deviceId string) {
 	tools.ExeCmd(cmd)
 	cmd = "adb -s " + deviceId + " install " + mf.AppPath
 	tools.ExeCmd(cmd)
-	cmd = "sleep 120"
-	tools.ExeCmd(cmd)
+	//	cmd = "sleep 120"
+	//	tools.ExeCmd(cmd)
 	cmd = "adb -s " + deviceId + " shell monkey -p " + mf.PkgName + " " + mf.Argu
 	out += tools.ExeCmd(cmd)
 	cmd = "adb -s " + deviceId + " uninstall " + mf.PkgName
