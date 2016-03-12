@@ -1,7 +1,7 @@
 package main
 
 import (
-	"apsaras/andevice"
+	"apsaras/device"
 	"apsaras/framework"
 	"apsaras/node"
 	"apsaras/task"
@@ -178,7 +178,7 @@ func checkInfo(conn *net.TCPConn, kind string) {
 			return
 		}
 
-		var devMap map[string]andevice.DeviceInfo = make(map[string]andevice.DeviceInfo)
+		var devMap map[string]device.DeviceInfo = make(map[string]device.DeviceInfo)
 		for _, sv := range slaves.Map {
 			fmt.Println("ip: " + sv.IP)
 			fmt.Println("devices:")

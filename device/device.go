@@ -1,4 +1,4 @@
-package andevice
+package device
 
 import (
 	"fmt"

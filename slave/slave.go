@@ -1,7 +1,7 @@
 package main
 
 import (
-	"apsaras/andevice"
+	"apsaras/device"
 	"apsaras/framework"
 	"apsaras/node"
 	"apsaras/task"
@@ -28,14 +28,14 @@ var devLock *sync.Mutex
 
 //Record all devices in this slave
 //serial num : device
-var deviceMap map[string]andevice.Device
+var deviceMap map[string]device.Device
 
 var taskMap map[string]task.RunTask
 
 func main() {
 
 	//init
-	deviceMap = make(map[string]andevice.Device)
+	deviceMap = make(map[string]device.Device)
 	taskMap = make(map[string]task.RunTask)
 	taskLock = new(sync.Mutex)
 	devLock = new(sync.Mutex)
@@ -115,7 +115,7 @@ func diaMaster() {
 		//copy deivces information
 		devLock.Lock()
 
-		beat.DeviceStates = make(map[string]andevice.Device)
+		beat.DeviceStates = make(map[string]device.Device)
 		for key, v := range deviceMap {
 			beat.DeviceStates[key] = v
 		}
@@ -168,7 +168,7 @@ func diaMaster() {
 					//allocte the device
 					devLock.Lock()
 					dev, exist := deviceMap[ts.TaskInfo.DeviceId]
-					if exist && dev.State == andevice.DEVICE_FREE {
+					if exist && dev.State == device.DEVICE_FREE {
 
 						//create local file
 						exist, err := tools.FileExists(ts.TaskInfo.JobId)
@@ -191,7 +191,7 @@ func diaMaster() {
 
 						//run this task
 						fmt.Println("Start task: " + ts.TaskInfo.JobId + "--" + ts.TaskInfo.DeviceId)
-						dev.State = andevice.DEVICE_RUN
+						dev.State = device.DEVICE_RUN
 						deviceMap[ts.TaskInfo.DeviceId] = dev
 
 						go runTask(ts)
@@ -236,7 +236,7 @@ func updateDevInfo() {
 	tools.CheckError(err)
 
 	//struct this json
-	var dvinfos andevice.DeviceInfoSlice
+	var dvinfos device.DeviceInfoSlice
 	err = json.Unmarshal(content, &dvinfos)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Fatal error: %s", err.Error())
@@ -244,11 +244,11 @@ func updateDevInfo() {
 	}
 
 	//get update devices map
-	newMap := make(map[string]andevice.Device)
+	newMap := make(map[string]device.Device)
 	for _, dvinfo := range dvinfos.DeviceInfos {
-		var dev andevice.Device
+		var dev device.Device
 		//dev.IP = mIP
-		dev.State = andevice.DEVICE_FREE
+		dev.State = device.DEVICE_FREE
 		dev.Info = dvinfo
 		newMap[dvinfo.Id] = dev
 		//fmt.Println(dvinfo)
@@ -273,10 +273,10 @@ func updateDevInfo() {
 //		if ts.TaskInfo.State == task.TASK_QUEUE {
 //			devLock.Lock()
 //			dev, exist := deviceMap[ts.TaskInfo.DeviceId]
-//			if exist && dev.State == andevice.DEVICE_FREE {
+//			if exist && dev.State == device.DEVICE_FREE {
 //				//run this task
 //				fmt.Println("Start task: " + ts.TaskInfo.JobId + "--" + ts.TaskInfo.DeviceId)
-//				dev.State = andevice.DEVICE_RUN
+//				dev.State = device.DEVICE_RUN
 //				deviceMap[ts.TaskInfo.DeviceId] = dev
 //				go runTask(ts)
 //				ts.TaskInfo.State = task.TASK_RUN
@@ -318,7 +318,7 @@ func runTask(ts task.RunTask) {
 	devLock.Lock()
 	dev, exist := deviceMap[devId]
 	if exist {
-		dev.State = andevice.DEVICE_FREE
+		dev.State = device.DEVICE_FREE
 		deviceMap[devId] = dev
 	}
 	devLock.Unlock()

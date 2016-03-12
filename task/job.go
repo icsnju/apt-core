@@ -27,7 +27,7 @@ type JobMap struct {
 
 type JobBrief struct {
 	JobId      string
-	StartTime  time.Time
+	StartTime  string
 	FrameKind  string
 	FilterKind string
 	Status     string
@@ -38,6 +38,22 @@ type SubJob struct {
 	Frame      framework.FrameStruct
 	FilterKind string
 	Filter     framework.FilterInterface
+}
+
+func BriefThisJob(job Job) JobBrief {
+	var jbr JobBrief
+	jbr.JobId = job.JobId
+	jbr.StartTime = job.StartTime.String()
+	jbr.FrameKind = job.JobInfo.FrameKind
+	jbr.FilterKind = job.JobInfo.FilterKind
+	var status string
+	if job.Finished {
+		status = "Finished"
+	} else {
+		status = "Running"
+	}
+	jbr.Status = status
+	return jbr
 }
 
 func ParserSubJobFromJson(content []byte) (SubJob, error) {

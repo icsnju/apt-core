@@ -8,7 +8,6 @@ scp -r slave/ test@node15:~/Go/
 scp -r slave/ test@node16:~/Go/
 scp -r slave/ test@node17:~/Go/
 scp -r slave/ test@node18:~/Go/
-#scp -r slave/ test@node19:~/Go/
 scp -r slave/ test@node20:~/Go/
 scp -r slave/ test@node21:~/Go/
 

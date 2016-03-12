@@ -1,7 +1,7 @@
 package node
 
 import (
-	"apsaras/andevice"
+	"apsaras/device"
 	"apsaras/task"
 )
 
@@ -9,7 +9,7 @@ import (
 //DevicesStates,string:int
 type SlaveInfo struct {
 	IP           string
-	DeviceStates map[string]andevice.Device
+	DeviceStates map[string]device.Device
 	TaskStates   map[string]task.Task
 }
 

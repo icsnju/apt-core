@@ -1,7 +1,7 @@
 package framework
 
 import (
-	"apsaras/andevice"
+	"apsaras/device"
 	"math/rand"
 	"time"
 )
@@ -14,7 +14,7 @@ const (
 )
 
 type FilterInterface interface {
-	GetDeviceSet(availDevs map[string]andevice.Device) []string
+	GetDeviceSet(availDevs map[string]device.Device) []string
 }
 
 //Specify devices
@@ -22,7 +22,7 @@ type SpecifyDevFilter struct {
 	IdList []string
 }
 
-func (sd SpecifyDevFilter) GetDeviceSet(availDevs map[string]andevice.Device) []string {
+func (sd SpecifyDevFilter) GetDeviceSet(availDevs map[string]device.Device) []string {
 	if len(sd.IdList) == 1 && sd.IdList[0] == "*" {
 		var nlist []string = make([]string, 0)
 		for id, _ := range availDevs {
@@ -40,9 +40,9 @@ type CompatibilityFilter struct {
 	Dominate string
 }
 
-func (cf CompatibilityFilter) GetDeviceSet(availDevs map[string]andevice.Device) []string {
+func (cf CompatibilityFilter) GetDeviceSet(availDevs map[string]device.Device) []string {
 	var idList []string = make([]string, 0)
-	clus := andevice.Kmedoids(availDevs, cf.Dominate)
+	clus := device.Kmedoids(availDevs, cf.Dominate)
 	var idMap map[string]int = make(map[string]int)
 	for len(idMap) < cf.Quantity {
 		for _, clu := range clus {
@@ -61,7 +61,7 @@ type SpecifyAttrFilter struct {
 	Value    string
 }
 
-func (cf SpecifyAttrFilter) GetDeviceSet(availDevs map[string]andevice.Device) []string {
+func (cf SpecifyAttrFilter) GetDeviceSet(availDevs map[string]device.Device) []string {
 	var idList []string = make([]string, 0)
 	return idList
 }
