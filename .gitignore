@@ -3,4 +3,5 @@ master/master
 client/client
 slave/slave
 test/
-.deploy.sh
+deploy.sh
+slave/dinfo.json
