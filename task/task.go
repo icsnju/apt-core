@@ -27,6 +27,12 @@ type Task struct {
 	StartTime  time.Time
 }
 
+type TaskBrief struct {
+	JobId    string
+	TargetId string
+	State    string
+}
+
 //A task runner
 type RunTask struct {
 	TaskInfo Task

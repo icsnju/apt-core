@@ -286,11 +286,11 @@ func closeSlave(ip string) {
 //Start find finished job
 func updateJobState() {
 	for {
+		//update job status
+		var finishedJobs []string = make([]string, 0)
 		jobLock.Lock()
 		for jid, job := range jobMap {
-			if job.Finished {
-				continue
-			}
+
 			isFinished := true
 			for _, ts := range job.TaskMap {
 				if ts.State == task.TASK_COMPLETE || ts.State == task.TASK_FAIL {
@@ -300,6 +300,7 @@ func updateJobState() {
 				}
 			}
 			if isFinished {
+				finishedJobs = append(finishedJobs, jid)
 				job.FinishTime = time.Now()
 				job.Finished = true
 				jobMap[jid] = job
@@ -311,6 +312,14 @@ func updateJobState() {
 			}
 		}
 		jobLock.Unlock()
+
+		//delete finished job
+		jobLock.Lock()
+		for _, id := range finishedJobs {
+			delete(jobMap, id)
+		}
+		jobLock.Unlock()
+
 		time.Sleep(tools.HEARTTIME)
 	}
 }

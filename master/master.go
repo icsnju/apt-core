@@ -80,7 +80,7 @@ func main() {
 	//init DB
 	err = initDB(DBURL)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("DB:", err)
 		os.Exit(1)
 	}
 	defer closeDB()

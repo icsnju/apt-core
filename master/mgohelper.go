@@ -37,3 +37,7 @@ func saveJobInDB(job task.JobBrief) {
 		fmt.Println(err)
 	}
 }
+
+func updateJobInDB() {
+
+}
