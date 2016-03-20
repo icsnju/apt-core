@@ -1,7 +1,8 @@
 .DS_Store
-master/master
+server/server
 client/client
 slave/slave
 test/
 deploy.sh
 slave/dinfo.json
+server/static/bower_components

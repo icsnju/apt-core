@@ -9,7 +9,6 @@ import (
 	"github.com/bitly/go-simplejson"
 )
 
-//Job
 //job id, framework and device list, time
 type Job struct {
 	JobId      string
@@ -56,6 +55,7 @@ func BriefThisJob(job Job) JobBrief {
 	return jbr
 }
 
+//parser submited job from json
 func ParserSubJobFromJson(content []byte) (SubJob, error) {
 
 	js, err := simplejson.NewJson(content)

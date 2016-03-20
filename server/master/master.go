@@ -1,4 +1,4 @@
-package main
+package master
 
 import (
 	"apsaras/device"
@@ -17,7 +17,10 @@ import (
 )
 
 //
-const DBURL = "localhost"
+const (
+	DBURL    = "localhost"
+	CONFPATH = "conf/master.conf"
+)
 
 // slave map ip: info
 var slavesMap map[string]node.SlaveInfo
@@ -32,7 +35,7 @@ var slavesLock *sync.Mutex
 var jobLock *sync.Mutex
 var idLock *sync.Mutex
 
-func main() {
+func StartMaster() {
 
 	//init
 	jobid = 0
@@ -43,7 +46,7 @@ func main() {
 	idLock = new(sync.Mutex)
 
 	//read config file
-	cf, err := os.Open("master.conf")
+	cf, err := os.Open(CONFPATH)
 	tools.CheckError(err)
 
 	reader := bufio.NewReaderSize(cf, 1024)
