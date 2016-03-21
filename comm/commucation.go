@@ -1,4 +1,4 @@
-package tools
+package comm
 
 import "time"
 

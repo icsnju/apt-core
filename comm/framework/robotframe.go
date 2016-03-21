@@ -1,7 +1,7 @@
 package framework
 
 import (
-	"apsaras/tools"
+	"apsaras/comm"
 	"path"
 )
 
@@ -18,19 +18,19 @@ func (bf RobotFrame) TaskExecutor(jobId, deviceId string) {
 	cmd := "java  -Djava.awt.headless=true -jar spoon-runner.jar --apk " + bf.AppPath
 	cmd += " --test-apk " + bf.TestPath + " --output " + outPath + " --sdk /opt/android-sdk/ "
 	cmd += "-serial " + deviceId
-	tools.ExeCmd(cmd)
+	comm.ExeCmd(cmd)
 }
 
 //move test file to target file
 func (bf RobotFrame) MoveTestFile(disPath string) FrameStruct {
-	jobPath := path.Join(disPath, tools.APPNAME)
+	jobPath := path.Join(disPath, comm.APPNAME)
 	cmd := "cp " + bf.AppPath + " " + jobPath
-	tools.ExeCmd(cmd)
+	comm.ExeCmd(cmd)
 	bf.AppPath = jobPath
 
-	jobPath = path.Join(disPath, tools.TESTNAME)
+	jobPath = path.Join(disPath, comm.TESTNAME)
 	cmd = "cp " + bf.TestPath + " " + jobPath
-	tools.ExeCmd(cmd)
+	comm.ExeCmd(cmd)
 	bf.TestPath = jobPath
 	return bf
 }

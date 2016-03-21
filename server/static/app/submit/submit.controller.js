@@ -13,14 +13,14 @@ angular.module('aptWebApp')
 
 
     //get devices from server
-//    $http.get('/api/devices').then(response => {
-//      if (response) {
-//        $scope.devices = response.data;
-//        for (var i = 0; i < $scope.devices.length; i++) {
-//          $scope.devices[i].check = false;
-//        }
-//      }
-//    });
+    $http.get('device').then(response => {
+      if (response) {
+        $scope.devices = response.data;
+        for (var i = 0; i < $scope.devices.length; i++) {
+          $scope.devices[i].check = false;
+        }
+      }
+    });
 
     $scope.checkEmpty = function() {
 
@@ -62,9 +62,11 @@ angular.module('aptWebApp')
       SubJob.Filter = {};
       SubJob.Filter.IdList = idList;
 
+      console.log('ahhhhhh')
+
       //submit requirement and files to server
       Upload.upload({
-        url: '/api/jobs',
+        url: 'job/',
         method: 'POST',
         data: {
           file: $scope.monkey.file,

@@ -1,8 +1,6 @@
 package framework
 
-import (
-	"encoding/gob"
-)
+import "encoding/gob"
 
 const (
 	FRAME_ROBOT   = "robotium"
@@ -21,7 +19,4 @@ func RigisterGob() {
 	gob.Register(RobotFrame{})
 	gob.Register(MonkeyFrame{})
 	gob.Register(InstallFrame{})
-	gob.Register(SpecifyAttrFilter{})
-	gob.Register(SpecifyDevFilter{})
-	gob.Register(CompatibilityFilter{})
 }

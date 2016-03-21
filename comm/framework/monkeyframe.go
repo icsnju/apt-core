@@ -1,7 +1,7 @@
 package framework
 
 import (
-	"apsaras/tools"
+	"apsaras/comm"
 	"fmt"
 	"os"
 	"path"
@@ -30,15 +30,15 @@ func (mf MonkeyFrame) TaskExecutor(jobId, deviceId string) {
 	var out string = ""
 
 	cmd := "adb -s" + deviceId + " uninstall " + mf.PkgName
-	tools.ExeCmd(cmd)
+	comm.ExeCmd(cmd)
 	cmd = "adb -s " + deviceId + " install " + mf.AppPath
-	out += tools.ExeCmd(cmd)
+	out += comm.ExeCmd(cmd)
 	//	cmd = "sleep 120"
-	//	tools.ExeCmd(cmd)
+	//	comm.ExeCmd(cmd)
 	cmd = "adb -s " + deviceId + " shell monkey -p " + mf.PkgName + " " + mf.Argu
-	out += tools.ExeCmd(cmd)
+	out += comm.ExeCmd(cmd)
 	cmd = "adb -s " + deviceId + " uninstall " + mf.PkgName
-	tools.ExeCmd(cmd)
+	comm.ExeCmd(cmd)
 
 	file.WriteString(out)
 	file.Sync()
@@ -47,9 +47,9 @@ func (mf MonkeyFrame) TaskExecutor(jobId, deviceId string) {
 
 //move test file to target file
 func (mf MonkeyFrame) MoveTestFile(disPath string) FrameStruct {
-	jobPath := path.Join(disPath, tools.APPNAME)
+	jobPath := path.Join(disPath, comm.APPNAME)
 	cmd := "cp " + mf.AppPath + " " + jobPath
-	tools.ExeCmd(cmd)
+	comm.ExeCmd(cmd)
 	mf.AppPath = jobPath
 
 	return mf

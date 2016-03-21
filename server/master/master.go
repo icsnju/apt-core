@@ -1,65 +1,41 @@
 package master
 
 import (
-	"apsaras/device"
-	"apsaras/framework"
-	"apsaras/node"
-	"apsaras/task"
-	"apsaras/tools"
+	"apsaras/comm"
+	"apsaras/comm/comp"
+	"apsaras/comm/framework"
 	"bufio"
 	"fmt"
 	"net"
 	"os"
 	"path"
 	"strings"
-	"sync"
 	"time"
 )
 
-//
 const (
-	DBURL    = "localhost"
 	CONFPATH = "conf/master.conf"
 )
 
-// slave map ip: info
-var slavesMap map[string]node.SlaveInfo
-
-// job map
-var jobMap map[string]task.Job
-
 var shareDirPath string
-var jobid int
-
-var slavesLock *sync.Mutex
-var jobLock *sync.Mutex
-var idLock *sync.Mutex
 
 func StartMaster() {
 
-	//init
-	jobid = 0
-	slavesMap = make(map[string]node.SlaveInfo)
-	jobMap = make(map[string]task.Job)
-	slavesLock = new(sync.Mutex)
-	jobLock = new(sync.Mutex)
-	idLock = new(sync.Mutex)
-
 	//read config file
 	cf, err := os.Open(CONFPATH)
-	tools.CheckError(err)
+	comm.CheckError(err)
 
 	reader := bufio.NewReaderSize(cf, 1024)
 	//share path
 	line, _, err := reader.ReadLine()
-	tools.CheckError(err)
+	comm.CheckError(err)
 	sublines := strings.Split(string(line), "=")
 	if len(sublines) == 2 && sublines[0] == "share" {
 		shareDirPath = sublines[1]
 		os.RemoveAll(shareDirPath) //clean old files
-		subPath := path.Join(shareDirPath, tools.MASTER)
+		subPath := path.Join(shareDirPath, comm.MASTER)
 		os.MkdirAll(subPath, os.ModePerm)
-		subPath = path.Join(shareDirPath, tools.SLAVE)
+		subPath = path.Join(shareDirPath, comm.SLAVE)
 		os.MkdirAll(subPath, os.ModePerm)
 		fmt.Println("share file path: " + shareDirPath)
 	} else {
@@ -69,7 +45,7 @@ func StartMaster() {
 
 	//port
 	line, _, err = reader.ReadLine()
-	tools.CheckError(err)
+	comm.CheckError(err)
 	sublines = strings.Split(string(line), "=")
 	var port string
 	if len(sublines) == 2 && sublines[0] == "port" {
@@ -80,29 +56,22 @@ func StartMaster() {
 		os.Exit(1)
 	}
 
-	//init DB
-	err = initDB(DBURL)
-	if err != nil {
-		fmt.Println("DB:", err)
-		os.Exit(1)
-	}
-	defer closeDB()
-
 	//close config file
 	cf.Close()
 
 	//create TCP listener
 	service := ":" + port
 	tcpAddr, err := net.ResolveTCPAddr("tcp4", service)
-	tools.CheckError(err)
+	comm.CheckError(err)
 	listener, err := net.ListenTCP("tcp", tcpAddr)
 	defer listener.Close()
-	tools.CheckError(err)
+	comm.CheckError(err)
 
 	//register in gob
 	framework.RigisterGob()
+	comp.RigisterGob()
 	//start find finished job
-	go updateJobState()
+	go jobManager.updateJobInDB()
 	//go shift() //TODO
 
 	//start to wait for slave
@@ -115,7 +84,7 @@ func StartMaster() {
 
 		message := make([]byte, 128) // set maxium request length to 128KB to prevent flood attack
 		//wait hi
-		conn.SetReadDeadline(time.Now().Add(tools.WAITFORDIA)) // set 2 minutes timeout
+		conn.SetReadDeadline(time.Now().Add(comm.WAITFORDIA)) // set 2 minutes timeout
 		mLen, err := conn.Read(message)
 		if err != nil {
 			fmt.Print("Connet miss: ")
@@ -126,32 +95,14 @@ func StartMaster() {
 		mIP := conn.RemoteAddr().String()
 		mIP = strings.Split(mIP, ":")[0]
 		me := string(message[:mLen])
-		if me == tools.HIMASTER {
-			fmt.Println("A new slave connet to me!")
-			//write slaves info
-			slavesLock.Lock()
-			_, ok := slavesMap[mIP]
-			if ok {
-				//this slave is in the list
-				fmt.Println("This slave has connet to me : " + mIP)
-			} else {
-				slavesMap[mIP] = node.SlaveInfo{mIP, make(map[string]device.Device), make(map[string]task.Task)}
-			}
-			slavesLock.Unlock()
+		if me == comm.HIMASTER {
+
+			slave := comp.SlaveInfo{mIP, make(map[string]comp.Device), make(map[string]comp.Task)}
+			ok := slaveManager.addSlave(slave)
 			//it is a slave, handle it
-			go handleSlave(conn)
-		} else if me == tools.CHECKJOBS || me == tools.CHECKSLAVES || me == tools.CHECKDEVICES {
-			go handleClient(conn, me)
-		} else if me == tools.SUBJOB || me == tools.WEBSUBJOB {
-			go handleSubJob(conn, me)
-		} else {
-			if strings.HasPrefix(me, "job:") {
-				terms := strings.Split(me, ":")
-				if len(terms) == 2 {
-					go handleJobQuery(conn, terms[1])
-				}
-			} else {
-				fmt.Println("Message is wrong: " + me)
+			if ok {
+				fmt.Println("A new slave connet to me!")
+				go handleSlave(conn)
 			}
 		}
 	}

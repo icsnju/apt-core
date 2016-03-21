@@ -1,7 +1,7 @@
-package task
+package comp
 
 import (
-	"apsaras/framework"
+	"apsaras/comm/framework"
 	"time"
 )
 

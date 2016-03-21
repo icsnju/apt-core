@@ -1,8 +1,8 @@
-package task
+package comp
 
 import (
-	"apsaras/framework"
-	"apsaras/tools"
+	"apsaras/comm"
+	"apsaras/comm/framework"
 	"errors"
 	"time"
 
@@ -17,7 +17,6 @@ type Job struct {
 	StartTime  time.Time
 	FinishTime time.Time
 	LatestTime time.Time
-	Finished   bool
 }
 
 type JobMap struct {
@@ -29,14 +28,14 @@ type JobBrief struct {
 	StartTime  string
 	FrameKind  string
 	FilterKind string
-	Status     string
+	Status     int
 }
 
 type SubJob struct {
 	FrameKind  string
 	Frame      framework.FrameStruct
 	FilterKind string
-	Filter     framework.FilterInterface
+	Filter     FilterInterface
 }
 
 func BriefThisJob(job Job) JobBrief {
@@ -45,13 +44,7 @@ func BriefThisJob(job Job) JobBrief {
 	jbr.StartTime = job.StartTime.String()
 	jbr.FrameKind = job.JobInfo.FrameKind
 	jbr.FilterKind = job.JobInfo.FilterKind
-	var status string
-	if job.Finished {
-		status = "Finished"
-	} else {
-		status = "Running"
-	}
-	jbr.Status = status
+	jbr.Status = 0
 	return jbr
 }
 
@@ -59,11 +52,11 @@ func BriefThisJob(job Job) JobBrief {
 func ParserSubJobFromJson(content []byte) (SubJob, error) {
 
 	js, err := simplejson.NewJson(content)
-	tools.CheckError(err)
+	comm.CheckError(err)
 	framekind, err := js.Get("FrameKind").String()
-	tools.CheckError(err)
+	comm.CheckError(err)
 	filterkind, err := js.Get("FilterKind").String()
-	tools.CheckError(err)
+	comm.CheckError(err)
 
 	var sj SubJob
 
@@ -114,9 +107,9 @@ func ParserSubJobFromJson(content []byte) (SubJob, error) {
 	}
 
 	switch filterkind {
-	case framework.FILTER_SPECIFYDEVICES:
-		sj.FilterKind = framework.FILTER_SPECIFYDEVICES
-		var filter framework.SpecifyDevFilter
+	case FILTER_SPECIFYDEVICES:
+		sj.FilterKind = FILTER_SPECIFYDEVICES
+		var filter SpecifyDevFilter
 		idList, err1 := js.Get("Filter").Get("IdList").StringArray()
 		if err1 != nil {
 			err := errors.New("SpecifyDevices filter error in json file! IdList is needed!")
@@ -125,9 +118,9 @@ func ParserSubJobFromJson(content []byte) (SubJob, error) {
 		filter.IdList = idList
 		sj.Filter = filter
 
-	case framework.FILTER_SPECIFYATTR:
-		sj.FilterKind = framework.FILTER_SPECIFYATTR
-		var filter framework.SpecifyAttrFilter
+	case FILTER_SPECIFYATTR:
+		sj.FilterKind = FILTER_SPECIFYATTR
+		var filter SpecifyAttrFilter
 		qt, err1 := js.Get("Filter").Get("Quantity").Int()
 		at, err2 := js.Get("Filter").Get("Attr").String()
 		vl, err3 := js.Get("Filter").Get("Value").String()
@@ -140,9 +133,9 @@ func ParserSubJobFromJson(content []byte) (SubJob, error) {
 		filter.Value = vl
 		sj.Filter = filter
 
-	case framework.FILTER_COMPATIBILITY:
-		sj.FilterKind = framework.FILTER_COMPATIBILITY
-		var filter framework.CompatibilityFilter
+	case FILTER_COMPATIBILITY:
+		sj.FilterKind = FILTER_COMPATIBILITY
+		var filter CompatibilityFilter
 		qt, err1 := js.Get("Filter").Get("Quantity").Int()
 		dt, err2 := js.Get("Filter").Get("Dominate").String()
 		if err1 != nil || err2 != nil {
