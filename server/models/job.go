@@ -7,11 +7,14 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-func SaveJobInDB(job comp.JobBrief) {
-	err := jobCollection.Insert(job)
-	if err != nil {
-		fmt.Println(err)
-	}
+const (
+	JOB_ID     = "jobid"
+	JOB_STATUS = "status"
+)
+
+func SaveJobInDB(job comp.JobBrief) error {
+	return jobCollection.Insert(job)
+
 }
 
 func GetJobsInDB() []comp.JobBrief {
@@ -25,7 +28,7 @@ func GetJobsInDB() []comp.JobBrief {
 }
 
 func UpdateJobInDB(id string, update interface{}) {
-	err := jobCollection.Update(bson.M{"JobId": id}, update)
+	err := jobCollection.Update(bson.M{JOB_ID: id}, update)
 	if err != nil {
 		fmt.Println("job update err in db :", err)
 	}

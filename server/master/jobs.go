@@ -23,12 +23,11 @@ type JobManager struct {
 var jobManager *JobManager = &JobManager{make(map[string]comp.Job), 0, new(sync.Mutex), new(sync.Mutex)}
 
 func (m *JobManager) idGenerator() string {
-	var id = 0
+	var id int64 = 0
 	m.idLock.Lock()
-	id = m.jobid
-	m.jobid = id + 1
+	id = time.Now().Unix()
 	m.idLock.Unlock()
-	return strconv.Itoa(id)
+	return strconv.FormatInt(id, 10)
 }
 
 func (m *JobManager) addJob(job comp.Job) {
@@ -49,14 +48,9 @@ func (m *JobManager) deleteJob(id string) {
 }
 
 //handle sub job
-func (m *JobManager) submitJob(message []byte) {
-	mid := m.idGenerator()
+func (m *JobManager) createJob(subjob comp.SubJob) comp.Job {
 
-	subjob, err := comp.ParserSubJobFromJson(message)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
+	mid := m.idGenerator()
 
 	var job comp.Job
 	job.JobId = mid
@@ -80,10 +74,7 @@ func (m *JobManager) submitJob(message []byte) {
 	}
 	job.TaskMap = taskMap
 
-	//add this job in job manager
-	m.addJob(job)
-	//insert this job in db
-	//TODO
+	return job
 }
 
 func (m *JobManager) updateJobs(getBeat comp.SlaveInfo) {
@@ -217,7 +208,7 @@ func (m *JobManager) updateJobInDB() {
 			if all == pro {
 				finishedJobs = append(finishedJobs, jid)
 			}
-			update := bson.M{"Status": rate}
+			update := bson.M{"$set": bson.M{models.JOB_STATUS: rate}}
 			models.UpdateJobInDB(jid, update)
 		}
 		m.jobLock.Unlock()

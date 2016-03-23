@@ -61,16 +61,14 @@ angular.module('aptWebApp')
       SubJob.FilterKind = 'specify_devices';
       SubJob.Filter = {};
       SubJob.Filter.IdList = idList;
-
-      console.log('ahhhhhh')
-
+      var jobjson=JSON.stringify(SubJob)
       //submit requirement and files to server
       Upload.upload({
         url: 'job/',
         method: 'POST',
         data: {
           file: $scope.monkey.file,
-          job: SubJob
+          job: jobjson
         }
       }).then(function(resp) {
         console.log('Success ' + resp.config.data.file.name + 'uploaded. Response: ' + resp.data);

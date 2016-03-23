@@ -13,10 +13,11 @@ import (
 const DBURL = "localhost"
 
 func startClient() {
-	beego.Router("/", &controllers.MainController{})
-	beego.Router("/submit", &controllers.MainController{})
+	//api
 	beego.Router("/job/", &controllers.JobController{}, "get:ListJobs;post:CreateJob")
 	beego.Router("/device", &controllers.DeviceController{}, "get:ListDevices")
+	//html
+	beego.Router("/*", &controllers.MainController{})
 
 	beego.Run()
 }

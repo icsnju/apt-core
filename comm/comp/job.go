@@ -38,10 +38,10 @@ type SubJob struct {
 	Filter     FilterInterface
 }
 
-func BriefThisJob(job Job) JobBrief {
+func (job Job) ToBrief() JobBrief {
 	var jbr JobBrief
 	jbr.JobId = job.JobId
-	jbr.StartTime = job.StartTime.String()
+	jbr.StartTime = job.StartTime.Format("2006-01-02 15:04:05")
 	jbr.FrameKind = job.JobInfo.FrameKind
 	jbr.FilterKind = job.JobInfo.FilterKind
 	jbr.Status = 0

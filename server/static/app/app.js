@@ -12,7 +12,7 @@ angular.module('aptWebApp', [
   ])
   .config(function($urlRouterProvider, $locationProvider) {
     $urlRouterProvider
-      .otherwise('/');
+      .otherwise('/table');
 
     $locationProvider.html5Mode(true);
   });
