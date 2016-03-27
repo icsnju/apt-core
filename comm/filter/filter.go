@@ -1,6 +1,9 @@
-package comp
+package filter
 
-import "encoding/gob"
+import (
+	"apsaras/comm/comp"
+	"encoding/gob"
+)
 
 //The kind of device filter
 const (
@@ -10,7 +13,7 @@ const (
 )
 
 type FilterInterface interface {
-	GetDeviceSet(availDevs []Device) []string
+	GetDeviceSet(availDevs []comp.Device) []string
 }
 
 //Specify devices
@@ -18,7 +21,7 @@ type SpecifyDevFilter struct {
 	IdList []string
 }
 
-func (sd SpecifyDevFilter) GetDeviceSet(availDevs []Device) []string {
+func (sd SpecifyDevFilter) GetDeviceSet(availDevs []comp.Device) []string {
 	if len(sd.IdList) == 1 && sd.IdList[0] == "*" {
 		var nlist []string = make([]string, 0)
 		for _, dev := range availDevs {
@@ -36,7 +39,7 @@ type CompatibilityFilter struct {
 	Dominate string
 }
 
-func (cf CompatibilityFilter) GetDeviceSet(availDevs []Device) []string {
+func (cf CompatibilityFilter) GetDeviceSet(availDevs []comp.Device) []string {
 	var idList []string = make([]string, 0)
 	//	clus := device.Kmedoids(availDevs, cf.Dominate)
 	//	var idMap map[string]int = make(map[string]int)
@@ -57,7 +60,7 @@ type SpecifyAttrFilter struct {
 	Value    string
 }
 
-func (cf SpecifyAttrFilter) GetDeviceSet(availDevs []Device) []string {
+func (cf SpecifyAttrFilter) GetDeviceSet(availDevs []comp.Device) []string {
 	var idList []string = make([]string, 0)
 	return idList
 }

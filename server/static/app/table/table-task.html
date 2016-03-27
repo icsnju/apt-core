@@ -1,0 +1,49 @@
+<div class="row">
+  <div class="job-top col-md-6 col-md-offset-2">
+    <button class="btn btn-success" ui-sref="table.all">Back</button>
+  </div>
+</div>
+
+<div class="row">
+  <div class="job-top col-md-8 col-md-offset-2">
+    <dl class="task-dl dl-horizontal">
+      <dt>Job ID:</dt>
+      <dd>{{job.jobid}}</dd>
+      <dt>FrameWork:</dt>
+      <dd>{{job.jobinfo.framekind}}</dd>
+      <dd>{{job.jobinfo.frame|json}}</dd>
+      <dt>Filter:</dt>
+      <dd>{{job.jobinfo.filterkind}}</dd>
+      <dd>{{job.jobinfo.filter|json}}</dd>
+      <dt>Start Time:</dt>
+      <dd>{{job.starttime}}</dd>
+      <dt>Allocated Time:</dt>
+      <dd>{{job.latesttime}}</dd>
+      <dt>Finish Time:</dt>
+      <dd>{{job.finishtime}}</dd>
+    </dl>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-8 col-md-offset-2">
+    <table class="job-top table table-hover">
+      <thead>
+        <tr>
+          <th>Device ID</th>
+          <th>StartTime</th>
+          <th>FinishTime</th>
+          <th>State</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="gradeU" ng-repeat="task in tasks">
+          <td>{{task.deviceid}}</td>
+          <td>{{task.starttime}}</td>
+          <td>{{task.finishtime}}</td>
+          <td>{{task.state}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

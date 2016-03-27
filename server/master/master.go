@@ -3,6 +3,7 @@ package master
 import (
 	"apsaras/comm"
 	"apsaras/comm/comp"
+	"apsaras/comm/filter"
 	"apsaras/comm/framework"
 	"bufio"
 	"fmt"
@@ -69,7 +70,7 @@ func StartMaster() {
 
 	//register in gob
 	framework.RigisterGob()
-	comp.RigisterGob()
+	filter.RigisterGob()
 	//start find finished job
 	go jobManager.updateJobInDB()
 	//go shift() //TODO

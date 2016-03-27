@@ -1,8 +1,9 @@
 .DS_Store
 server/server
-client/client
 slave/slave
 test/
 deploy.sh
 slave/dinfo.json
 server/static/bower_components
+server/start.sh
+slave/start.sh

@@ -14,7 +14,8 @@ const DBURL = "localhost"
 
 func startClient() {
 	//api
-	beego.Router("/job/", &controllers.JobController{}, "get:ListJobs;post:CreateJob")
+	beego.Router("/job", &controllers.JobController{}, "get:ListJobs;post:CreateJob")
+	beego.Router("/job/:id", &controllers.JobController{}, "get:GetJob")
 	beego.Router("/device", &controllers.DeviceController{}, "get:ListDevices")
 	//html
 	beego.Router("/*", &controllers.MainController{})

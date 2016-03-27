@@ -1,0 +1,36 @@
+<div class="row">
+  <div class="col-md-6 col-md-offset-2">
+    <h3>Jobs</h3>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-6 col-md-offset-2">
+    <button class="btn btn-success" ui-sref="submit">New Job</button>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-8 col-md-offset-2">
+    <table class="job-top table table-hover">
+      <thead>
+        <tr>
+          <th>Job ID</th>
+          <th>Start Time</th>
+          <th>Framework</th>
+          <th>Filter</th>
+          <th>Process</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="gradeU" ng-repeat="job in jobs">
+          <td ui-sref="table.tasks({jobid:job.JobId})">{{job.JobId}}</td>
+          <td>{{job.StartTime}}</td>
+          <td>{{job.FrameKind}}</td>
+          <td>{{job.FilterKind}}</td>
+          <td>{{job.Status}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

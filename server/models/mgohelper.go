@@ -3,15 +3,20 @@ package models
 import "gopkg.in/mgo.v2"
 
 const (
-	DBNAME   = "aptweb-dev"
-	JOB_C    = "jobs"
-	DEVICE_C = "devices"
+	DBNAME      = "aptweb-dev"
+	JOBSKETCH_C = "jobsketches"
+	JOB_C       = "jobs"
+)
+
+const (
+	JOB_ID     = "jobid"
+	JOB_STATUS = "status"
 )
 
 var session *mgo.Session
 
+var jobSketchCollection *mgo.Collection
 var jobCollection *mgo.Collection
-var deviceCollection *mgo.Collection
 
 func InitDB(url string) error {
 	session, err := mgo.Dial(url)
@@ -22,7 +27,7 @@ func InitDB(url string) error {
 	db := session.DB(DBNAME)
 
 	jobCollection = db.C(JOB_C)
-	deviceCollection = db.C(DEVICE_C)
+	jobSketchCollection = db.C(JOBSKETCH_C)
 	return nil
 }
 

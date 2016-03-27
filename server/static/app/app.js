@@ -8,11 +8,10 @@ angular.module('aptWebApp', [
     'validation.match',
     'ngFileUpload',
     'ngAnimate',
-    'bsTable'
   ])
   .config(function($urlRouterProvider, $locationProvider) {
     $urlRouterProvider
-      .otherwise('/table');
+      .otherwise('/table/all');
 
     $locationProvider.html5Mode(true);
   });

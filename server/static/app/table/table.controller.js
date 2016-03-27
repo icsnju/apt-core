@@ -1,73 +1,28 @@
 'use strict';
 
 angular.module('aptWebApp')
-  .controller('TableCtrl', function($scope, $http) {
+  .controller('TableCtrl', function($scope, $http, $state) {
     $scope.jt = {};
     $scope.jt.bsTableControl = {};
+    $scope.jobs = [];
 
-    $http.get('job/').then(response => {
+    $http.get('job').then(response => {
       if (response) {
         $scope.jobs = response.data;
-
-        $scope.jt.bsTableControl = {
-          options: {
-            data: $scope.jobs,
-            rowStyle: function(row, index) {
-              return {
-                classes: 'none'
-              };
-            },
-            cache: false,
-            height: 400,
-            striped: true,
-            pagination: true,
-            pageSize: 10,
-            pageList: [5, 10, 25, 50, 100, 200],
-            search: true,
-            showColumns: true,
-            showRefresh: true,
-            minimumCountColumns: 2,
-            clickToSelect: false,
-            showToggle: false,
-            maintainSelected: true,
-            columns: [{
-              field: 'state',
-              checkbox: true
-            }, {
-              field: 'JobId',
-              title: 'Job ID',
-              align: 'center',
-              valign: 'bottom',
-              sortable: true
-            }, {
-              field: 'StartTime',
-              title: 'Start Time',
-              align: 'center',
-              valign: 'middle',
-              sortable: true
-            }, {
-              field: 'FrameKind',
-              title: 'Framework',
-              align: 'left',
-              valign: 'top',
-              sortable: true
-            }, {
-              field: 'FilterKind',
-              title: 'Filter',
-              align: 'left',
-              valign: 'top',
-              sortable: true
-            }, {
-              field: 'Status',
-              title: 'Status',
-              align: 'left',
-              valign: 'top',
-              sortable: true
-            }]
-          }
-        };
-
       }
     });
 
+  })
+  .controller('TasksCtrl', function($scope, $http, $state, $stateParams) {
+    $scope.job={};
+    $scope.tasks=[];
+    $http.get('job/'+$stateParams.jobid).then(response => {
+      if (response) {
+        $scope.job = response.data;
+        var taskmap=$scope.job.taskmap;
+        for(var key in taskmap){
+          $scope.tasks.push(taskmap[key]);
+        }
+      }
+    });
   });

@@ -38,7 +38,8 @@ angular.module('aptWebApp')
       //check empty input
       if (!$scope.monkey.file || !$scope.monkey.pkg || !$scope.monkey.arg) {
         $scope.frameErr = true;
-      } else if (idList.length <= 0) {
+      }
+      else if (idList.length <= 0) {
         $scope.selectorErr = true;
       }
     }
@@ -72,7 +73,7 @@ angular.module('aptWebApp')
         }
       }).then(function(resp) {
         console.log('Success ' + resp.config.data.file.name + 'uploaded. Response: ' + resp.data);
-        $state.go('table');
+        $state.go('table.all');
       }, function(resp) {
         console.log('Error status: ' + resp.status);
       }, function(evt) {

@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"apsaras/comm"
-	"apsaras/comm/comp"
 	"apsaras/comm/framework"
 	"apsaras/server/master"
 	"apsaras/server/models"
@@ -17,10 +16,24 @@ type JobController struct {
 	beego.Controller
 }
 
-//List all job in db
+//List all job sketch in db
 func (this *JobController) ListJobs() {
-	jobs := models.GetJobsInDB()
+	jobs := models.GetJobSketchesInDB()
 	this.Data["json"] = jobs
+	this.ServeJSON()
+}
+
+func (this *JobController) GetJob() {
+	id := this.Ctx.Input.Param(":id")
+	job, err := models.GetJobInDB(id)
+	if err != nil {
+		this.Ctx.Output.SetStatus(404)
+		this.Ctx.Output.Body([]byte("Job not found"))
+		log.Println(err)
+		return
+	}
+
+	this.Data["json"] = job
 	this.ServeJSON()
 }
 
@@ -28,7 +41,7 @@ func (this *JobController) ListJobs() {
 func (this *JobController) CreateJob() {
 	//create a subjob
 	jobjson := this.GetString("job")
-	subjob, err := comp.ParserSubJobFromJson([]byte(jobjson))
+	subjob, err := models.ParserSubJobFromJson([]byte(jobjson))
 	if err != nil {
 		log.Println(err)
 		return
@@ -36,19 +49,29 @@ func (this *JobController) CreateJob() {
 
 	//create a job
 	job := master.CreateJob(subjob)
+	//move test files
 	err = moveTestFile(&job, this)
 	if err != nil {
 		log.Println(err)
 		return
 	}
 	//save job in db
-	err = models.SaveJobInDB(job.ToBrief())
+	err = models.SaveJobInDB(job)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	err = models.SaveJobSketchInDB(job.ToSketch())
+	if err != nil {
+		log.Println(err)
+		return
+	}
 	//add job in master
 	master.AddJobInMaster(job)
 
 }
 
-func moveTestFile(job *comp.Job, control *JobController) error {
+func moveTestFile(job *models.Job, control *JobController) error {
 	if job.JobInfo.FrameKind == framework.FRAME_MONKEY {
 		//move file to share path
 		dist := path.Join(master.GetSharePath(), job.JobId)

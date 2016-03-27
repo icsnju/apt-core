@@ -5,6 +5,7 @@ import (
 	"apsaras/comm/comp"
 	"apsaras/server/models"
 	"fmt"
+	"log"
 	"math/rand"
 	"strconv"
 	"sync"
@@ -14,13 +15,13 @@ import (
 )
 
 type JobManager struct {
-	jobMap  map[string]comp.Job
+	jobMap  map[string]models.Job
 	jobid   int
 	jobLock *sync.Mutex
 	idLock  *sync.Mutex
 }
 
-var jobManager *JobManager = &JobManager{make(map[string]comp.Job), 0, new(sync.Mutex), new(sync.Mutex)}
+var jobManager *JobManager = &JobManager{make(map[string]models.Job), 0, new(sync.Mutex), new(sync.Mutex)}
 
 func (m *JobManager) idGenerator() string {
 	var id int64 = 0
@@ -30,7 +31,7 @@ func (m *JobManager) idGenerator() string {
 	return strconv.FormatInt(id, 10)
 }
 
-func (m *JobManager) addJob(job comp.Job) {
+func (m *JobManager) addJob(job models.Job) {
 	m.jobLock.Lock()
 	_, ex := m.jobMap[job.JobId]
 	if ex {
@@ -48,11 +49,11 @@ func (m *JobManager) deleteJob(id string) {
 }
 
 //handle sub job
-func (m *JobManager) createJob(subjob comp.SubJob) comp.Job {
+func (m *JobManager) createJob(subjob models.SubJob) models.Job {
 
 	mid := m.idGenerator()
 
-	var job comp.Job
+	var job models.Job
 	job.JobId = mid
 	job.JobInfo = subjob
 	job.StartTime = time.Now()
@@ -186,8 +187,9 @@ func (m *JobManager) createRuntask(bestJobId, id string) comp.RunTask {
 	return rt
 }
 
-//Start find finished job
+//Start find finished job cyclically
 func (m *JobManager) updateJobInDB() {
+	log.Println("Start update job state.")
 	for {
 		//update job status
 		var finishedJobs []string = make([]string, 0)
@@ -204,18 +206,29 @@ func (m *JobManager) updateJobInDB() {
 					pro = pro + 1
 				}
 			}
-			rate := pro * 100 / all
+			rate := 100
+			if all != 0 {
+				rate = pro * 100 / all
+
+			}
+			//log.Println(all, " : ", pro)
+
 			if all == pro {
 				finishedJobs = append(finishedJobs, jid)
+				job.FinishTime = time.Now()
 			}
 			update := bson.M{"$set": bson.M{models.JOB_STATUS: rate}}
-			models.UpdateJobInDB(jid, update)
+			models.UpdateJobSketchInDB(jid, update)
+			models.UpdateJobInDB(jid, job)
 		}
 		m.jobLock.Unlock()
 
 		//delete finished job
 		for _, id := range finishedJobs {
+			log.Println("Delete finished job: ", id)
+			m.jobLock.Lock()
 			m.deleteJob(id)
+			m.jobLock.Unlock()
 		}
 
 		time.Sleep(comm.HEARTTIME)
