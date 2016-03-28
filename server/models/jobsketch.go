@@ -1,7 +1,7 @@
 package models
 
 import (
-	"fmt"
+	"log"
 
 	"gopkg.in/mgo.v2/bson"
 )
@@ -31,6 +31,6 @@ func GetJobSketchesInDB() []JobSketch {
 func UpdateJobSketchInDB(id string, update interface{}) {
 	err := jobSketchCollection.Update(bson.M{JOB_ID: id}, update)
 	if err != nil {
-		fmt.Println("job sketch update err in db :", err)
+		log.Println("job sketch update err in db :", err)
 	}
 }

@@ -3,6 +3,7 @@ package controllers
 import (
 	"apsaras/comm"
 	"apsaras/comm/framework"
+	"apsaras/server/config"
 	"apsaras/server/master"
 	"apsaras/server/models"
 	"log"
@@ -39,6 +40,7 @@ func (this *JobController) GetJob() {
 
 //Create a new job for client
 func (this *JobController) CreateJob() {
+	this.Ctx.Output.SetStatus(200)
 	//create a subjob
 	jobjson := this.GetString("job")
 	subjob, err := models.ParserSubJobFromJson([]byte(jobjson))
@@ -68,13 +70,12 @@ func (this *JobController) CreateJob() {
 	}
 	//add job in master
 	master.AddJobInMaster(job)
-
 }
 
 func moveTestFile(job *models.Job, control *JobController) error {
 	if job.JobInfo.FrameKind == framework.FRAME_MONKEY {
 		//move file to share path
-		dist := path.Join(master.GetSharePath(), job.JobId)
+		dist := path.Join(config.GetSharePath(), job.JobId)
 		err := os.Mkdir(dist, os.ModePerm)
 		if err != nil {
 			return err

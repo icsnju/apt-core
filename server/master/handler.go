@@ -4,7 +4,7 @@ import (
 	"apsaras/comm"
 	"apsaras/comm/comp"
 	"encoding/gob"
-	"fmt"
+	"log"
 	"net"
 	"strings"
 	"time"
@@ -13,11 +13,11 @@ import (
 //handle slave communication
 func handleSlave(conn net.Conn) {
 
-	defer conn.Close() // close connection before exit
 	mIP := conn.RemoteAddr().String()
 	mIP = strings.Split(mIP, ":")[0]
-	fmt.Println("New slave dial me: " + mIP)
+	log.Println("New slave dial me: " + mIP)
 
+	defer conn.Close() // close connection before exit
 	defer closeSlave(mIP)
 
 	decoder := gob.NewDecoder(conn)
@@ -30,27 +30,26 @@ func handleSlave(conn net.Conn) {
 		var getBeat comp.SlaveInfo
 		err := decoder.Decode(&getBeat)
 		if err != nil {
-			fmt.Println(err)
-			fmt.Println("Slave is dead! ")
-			return
+			log.Println("Slave is disconnected!", err)
+			break
 		}
 		if getBeat.IP != mIP {
-			fmt.Println("IP Error!")
-			return
+			log.Println("IP Error!")
+			break
 		}
-		fmt.Println("Get heart beat from: " + getBeat.IP)
+		log.Println("Get heart beat from: " + getBeat.IP)
 
 		//update slave information
 		slaveManager.updateSlave(getBeat)
 
 		//update job queue information
-		jobManager.updateJobs(getBeat)
+		jobManager.updateJobs(getBeat.TaskStates)
 
 		//heart beat response
 		taskList := getWaitTasks(mIP)
 		err = encoder.Encode(&taskList)
 		if err != nil {
-			fmt.Println(err)
+			log.Println(err)
 			break
 		}
 	}
@@ -84,7 +83,7 @@ func getWaitTasks(ip string) comp.RunTaskList {
 				rt := jobManager.createRuntask(bestJobId, id)
 
 				taskList.Tasks = append(taskList.Tasks, rt)
-				fmt.Println("Send task " + bestJobId + "--" + id + " to: " + ip)
+				log.Println("Send task " + bestJobId + "--" + id + " to: " + ip)
 			}
 		}
 	}

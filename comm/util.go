@@ -1,7 +1,7 @@
 package comm
 
 import (
-	"fmt"
+	"log"
 	"os"
 	"os/exec"
 	"strings"
@@ -15,17 +15,9 @@ const (
 	SLAVE  = "slave"
 )
 
-//Check if err is nil
-func CheckError(err error) {
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Fatal error: %s", err.Error())
-		os.Exit(1)
-	}
-}
-
 //Execute cmdline
 func ExeCmd(cmd string) string {
-	fmt.Println("command is ", cmd)
+	log.Println("command is ", cmd)
 	// splitting head => g++ parts => rest of the command
 	parts := strings.Fields(cmd)
 	head := parts[0]
@@ -34,13 +26,10 @@ func ExeCmd(cmd string) string {
 	out, err := exec.Command(head, parts...).Output()
 	var sout string = ""
 	if err != nil {
-		fmt.Printf("%s", err)
+		log.Println(err)
 		sout += err.Error() + "\n"
 	}
-	fmt.Printf("%s", out)
-
-	sout += string(out)
-	return sout
+	return string(out)
 }
 
 // exists returns whether the given file or directory exists or not

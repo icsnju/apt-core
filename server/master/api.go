@@ -27,7 +27,3 @@ func CreateJob(subjob models.SubJob) models.Job {
 func AddJobInMaster(job models.Job) {
 	jobManager.addJob(job)
 }
-
-func GetSharePath() string {
-	return shareDirPath
-}

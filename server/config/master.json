@@ -1,0 +1,6 @@
+{
+	"SharePath":"/Users/Tianchi/data",
+	"Port":"6666",
+	"DBUrl":"localhost",
+	"DBName":"aptweb-dev"
+}

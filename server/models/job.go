@@ -1,12 +1,11 @@
 package models
 
 import (
-	"apsaras/comm"
 	"apsaras/comm/comp"
 	"apsaras/comm/filter"
 	"apsaras/comm/framework"
 	"errors"
-	"fmt"
+	"log"
 	"time"
 
 	"github.com/bitly/go-simplejson"
@@ -42,15 +41,20 @@ func (job Job) ToSketch() JobSketch {
 
 //parser submited job from json
 func ParserSubJobFromJson(content []byte) (SubJob, error) {
+	var sj SubJob
 
 	js, err := simplejson.NewJson(content)
-	comm.CheckError(err)
+	if err != nil {
+		return sj, err
+	}
 	framekind, err := js.Get("FrameKind").String()
-	comm.CheckError(err)
+	if err != nil {
+		return sj, err
+	}
 	filterkind, err := js.Get("FilterKind").String()
-	comm.CheckError(err)
-
-	var sj SubJob
+	if err != nil {
+		return sj, err
+	}
 
 	switch framekind {
 	case framework.FRAME_ROBOT:
@@ -190,6 +194,6 @@ func GetJobInDB(id string) (interface{}, error) {
 func UpdateJobInDB(id string, update interface{}) {
 	err := jobCollection.Update(bson.M{JOB_ID: id}, update)
 	if err != nil {
-		fmt.Println("job update err in db :", err)
+		log.Println("job update err in db :", err)
 	}
 }

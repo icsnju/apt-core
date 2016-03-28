@@ -4,7 +4,6 @@ import (
 	"apsaras/comm"
 	"apsaras/comm/comp"
 	"apsaras/server/models"
-	"fmt"
 	"log"
 	"math/rand"
 	"strconv"
@@ -35,7 +34,7 @@ func (m *JobManager) addJob(job models.Job) {
 	m.jobLock.Lock()
 	_, ex := m.jobMap[job.JobId]
 	if ex {
-		fmt.Println("Error! Job id repetitive: " + job.JobId)
+		log.Println("Error! Job id repetitive: ", job.JobId)
 	} else {
 		m.jobMap[job.JobId] = job
 	}
@@ -78,20 +77,19 @@ func (m *JobManager) createJob(subjob models.SubJob) models.Job {
 	return job
 }
 
-func (m *JobManager) updateJobs(getBeat comp.SlaveInfo) {
+func (m *JobManager) updateJobs(taskinfo map[string]comp.Task) {
 	m.jobLock.Lock()
-	taskinfo := getBeat.TaskStates
 	for _, t := range taskinfo {
 		jid := t.JobId
 		did := t.DeviceId
 		job, ex := m.jobMap[jid]
 		if !ex {
-			fmt.Println("Job not exist! ", jid)
+			log.Println("Job not exist! ", jid)
 			continue
 		}
 		_, ex = job.TaskMap[did]
 		if !ex {
-			fmt.Println("Device not exist! ", did)
+			log.Println("Device not exist! ", did)
 			continue
 		}
 		job.TaskMap[did] = t
@@ -180,10 +178,10 @@ func (m *JobManager) updateJobTaskState(jobId, taskId string, state int) {
 	m.jobLock.Unlock()
 }
 
-func (m *JobManager) createRuntask(bestJobId, id string) comp.RunTask {
+func (m *JobManager) createRuntask(jobid, id string) comp.RunTask {
 	var rt comp.RunTask
-	rt.Frame = m.jobMap[bestJobId].JobInfo.Frame
-	rt.TaskInfo = m.jobMap[bestJobId].TaskMap[id]
+	rt.Frame = m.jobMap[jobid].JobInfo.Frame
+	rt.TaskInfo = m.jobMap[jobid].TaskMap[id]
 	return rt
 }
 
@@ -226,9 +224,7 @@ func (m *JobManager) updateJobInDB() {
 		//delete finished job
 		for _, id := range finishedJobs {
 			log.Println("Delete finished job: ", id)
-			m.jobLock.Lock()
 			m.deleteJob(id)
-			m.jobLock.Unlock()
 		}
 
 		time.Sleep(comm.HEARTTIME)

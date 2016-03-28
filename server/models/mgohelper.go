@@ -3,7 +3,6 @@ package models
 import "gopkg.in/mgo.v2"
 
 const (
-	DBNAME      = "aptweb-dev"
 	JOBSKETCH_C = "jobsketches"
 	JOB_C       = "jobs"
 )
@@ -18,13 +17,13 @@ var session *mgo.Session
 var jobSketchCollection *mgo.Collection
 var jobCollection *mgo.Collection
 
-func InitDB(url string) error {
+func InitDB(url, dbname string) error {
 	session, err := mgo.Dial(url)
 	if err != nil {
 		return err
 	}
 	session.SetMode(mgo.Monotonic, true)
-	db := session.DB(DBNAME)
+	db := session.DB(dbname)
 
 	jobCollection = db.C(JOB_C)
 	jobSketchCollection = db.C(JOBSKETCH_C)

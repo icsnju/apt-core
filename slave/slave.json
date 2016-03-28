@@ -1,0 +1,5 @@
+{
+	"SharePath":"/Users/Tianchi/data",
+	"ServerIP":"127.0.0.1:6666",
+	"AdbPath":"/Users/Tianchi/Tool/sdk/platform-tools/adb"
+}
