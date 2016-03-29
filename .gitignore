@@ -7,3 +7,4 @@ slave/dinfo.json
 server/static/bower_components
 server/start.sh
 slave/start.sh
+vendor/
