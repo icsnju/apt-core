@@ -6,6 +6,8 @@ import (
 	"log"
 )
 
+const APPCONFIG = "config/app.conf"
+
 var configPath = "config/master.json"
 
 type MasConf struct {

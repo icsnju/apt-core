@@ -41,7 +41,9 @@
           <td>{{task.deviceid}}</td>
           <td>{{task.starttime}}</td>
           <td>{{task.finishtime}}</td>
-          <td>{{task.state}}</td>
+          <td>
+            <a ng-click="DownloadResult(task.deviceid,$index)">{{task.state}}</a>
+          </td>
         </tr>
       </tbody>
     </table>

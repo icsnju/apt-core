@@ -24,6 +24,7 @@ func (this *JobController) ListJobs() {
 	this.ServeJSON()
 }
 
+//Get a job by id
 func (this *JobController) GetJob() {
 	id := this.Ctx.Input.Param(":id")
 	job, err := models.GetJobInDB(id)
@@ -91,4 +92,20 @@ func moveTestFile(job *models.Job, control *JobController) error {
 		job.JobInfo.Frame = monkey
 	}
 	return nil
+}
+
+//Get job result by device id
+func (this *JobController) GetTaskResult() {
+	jid := this.GetString("jobid")
+	did := this.GetString("deviceid")
+
+	resultPath := path.Join(config.GetSharePath(), jid, did)
+	zipPath := path.Join(config.GetSharePath(), jid, did+".zip")
+	err := comm.Zipit(resultPath, zipPath)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	name := jid + "_" + did + ".zip"
+	this.Ctx.Output.Download(zipPath, name)
 }

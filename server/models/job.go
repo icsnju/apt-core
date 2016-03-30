@@ -39,6 +39,40 @@ func (job Job) ToSketch() JobSketch {
 	return jbr
 }
 
+//func ParserJobFromJson(content []byte) (Job, error) {
+//	var job Job
+//	js, err := simplejson.NewJson(content)
+//	if err != nil {
+//		return job, err
+//	}
+//	jobid, err := js.Get("JobId").String()
+//	if err != nil {
+//		return job, err
+//	}
+//	job.JobId = jobid
+
+//	infobytes, err := js.Get("JobInfo").Bytes()
+//	if err != nil {
+//		return job, err
+//	}
+//	jobinfo, err := ParserSubJobFromJson(infobytes)
+//	if err != nil {
+//		return job, err
+//	}
+//	job.JobInfo = jobinfo
+
+//	start := js.Get("StartTime").Interface()
+//	job.StartTime = start.(time.Time)
+
+//	finish := js.Get("FinishTime").Interface()
+//	job.FinishTime = finish.(time.Time)
+
+//	latest := js.Get("LatestTime").Interface()
+//	job.LatestTime = latest.(time.Time)
+
+//	return job, nil
+//}
+
 //parser submited job from json
 func ParserSubJobFromJson(content []byte) (SubJob, error) {
 	var sj SubJob

@@ -5,26 +5,49 @@
 APSARAS (Allocation of PhySicAl devices foR Android teSting) is a distributed testing platform for Android apps.  
 
 ### Dependency  
-`github.com/bitly/go-simplejson`.  
 
-[MooseFS](http://www.moosefs.org/) [optional] in each node.  
+1. Go1.6  
 
-`JAVA Runtime Environment` in each node.  
+2. [MooseFS](http://www.moosefs.org/) [optional] in each node.  
 
-`Android SDK` in each node.
+3. `JAVA Runtime Environment` in each node.  
 
+4. `Android SDK` in each node.  
+
+5. Install Godep:  
+ 
+	```
+	$ go get github.com/tools/godep`  
+	```   
+	Put godep in envionment variables. In `Apsaras/`, get dependences from the Internet:   
+	
+	```
+	$ godep restore
+	$ godep save ./...
+	```   
+	You can save all dependnce in `./vendor`, and delete the package in `$GOPATH`.
+
+6. Update dependences.   
+
+	```
+	$ get [package]
+	$ godep save ./...
+	```	
+	
 ### Deployment  
 
 #### Build executable files
-   
+
+In `server/` or `slave/`:    
+  
 ```
-$ ./make.sh
+$ go build 
 ```  
-Executable files (master, slave and client) will be generated in relevant files. You can edit `make.sh` to output executable files in anywhere you want.  
+Executable files (server, slave) will be generated in relevant files.   
 
 #### Configuration 
 
-In `master/`, `slave/` and `client/` diretories, some configuration files should be configured correctly.  
+In `server/`, `slave/`diretories, some configuration files should be configured correctly.  
 
 **1. master.conf**  
 

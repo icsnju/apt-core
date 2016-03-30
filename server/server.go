@@ -13,10 +13,14 @@ import (
 )
 
 func startServer() {
+	beego.LoadAppConfig("ini", config.APPCONFIG)
 	//api
 	beego.Router("/job", &controllers.JobController{}, "get:ListJobs;post:CreateJob")
 	beego.Router("/job/:id", &controllers.JobController{}, "get:GetJob")
+	beego.Router("/download/task", &controllers.JobController{}, "get:GetTaskResult")
+
 	beego.Router("/device", &controllers.DeviceController{}, "get:ListDevices")
+
 	//html
 	beego.Router("/*", &controllers.MainController{})
 
