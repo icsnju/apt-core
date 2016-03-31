@@ -11,7 +11,7 @@ angular.module('aptWebApp', [
   ])
   .config(function($urlRouterProvider, $locationProvider) {
     $urlRouterProvider
-      .otherwise('/table/all');
+      .otherwise('/jobs');
 
     $locationProvider.html5Mode(true);
   });

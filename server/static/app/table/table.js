@@ -3,18 +3,14 @@
 angular.module('aptWebApp')
   .config(function($stateProvider) {
     $stateProvider
-      .state('table', {
-        url: '/table',
-        templateUrl: 'static/app/table/table.html',
+      .state('main.jobs', {
+        url: '/jobs',
+        templateUrl: 'static/app/table/jobs.html',
+        controller: 'JobCtrl'
       })
-      .state('table.all', {
-        url: '/all',
-        templateUrl: 'static/app/table/table-all.html',
-        controller: 'TableCtrl'
-      })
-      .state('table.tasks', {
-        url: '/{jobid:int}',
-        templateUrl: 'static/app/table/table-task.html',
-        controller: 'TasksCtrl'
+      .state('main.jobDetail', {
+        url: '/jobs/{jobid:int}',
+        templateUrl: 'static/app/table/job.detail.html',
+        controller: 'DetailCtrl'
       });
   });

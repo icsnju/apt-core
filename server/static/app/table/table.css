@@ -1,9 +1,21 @@
-.job-top {
-  margin-top: 20px;
+ul.detail {
+  clear: both;
+  margin: 0;
+  padding: 0px;
+  list-style: none;
 }
-.task-dl {
-  border-style: solid;
-  border-width: 1px;
-  border-color: #ddd;
-  border-radius: 3px;
+
+ul.detail > dl{
+  display: inline-block;
+  padding: 5px;
+  vertical-align: top;
+}
+
+ul.detail > dl > dt{
+  font-weight: bold;
+  font-size: 1.2em;
+}
+
+ul.detail > dl > dd{
+  font-size: 1.2em;
 }

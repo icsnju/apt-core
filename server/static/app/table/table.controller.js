@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('aptWebApp')
-  .controller('TableCtrl', function($scope, $http, $state) {
+  .controller('JobCtrl', function($scope, $http, $state) {
     $scope.jobs = [];
 
     $http.get('job').then(response => {
@@ -11,7 +11,7 @@ angular.module('aptWebApp')
     });
 
   })
-  .controller('TasksCtrl', function($scope, $http, $state, $stateParams, $window) {
+  .controller('DetailCtrl', function($scope, $http, $state, $stateParams, $window) {
     $scope.job = {};
     $scope.tasks = [];
     var jid = $stateParams.jobid

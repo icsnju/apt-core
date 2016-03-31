@@ -1,0 +1,103 @@
+<div class="wrapper wrapper-content">
+  <div class="row">
+    <div class="col-sm-12 animated fadeInRight">
+      <div class="ibox">
+        <div class="ibox-title">
+          <h2>
+            Jobs | ({{jobs.length}})
+          </h2>
+        </div>
+        <div class="ibox-content mailbox-main">
+          <div class="clearfix table-tools">
+            <span class="pull-left">
+              <button id="task-btn" class="btn btn-block btn-primary compose-mail" ui-sref="main.submit">Add Job</button>
+            </span>
+            <div class="pull-right" id="input-btn">
+              <form ng-submit="search()" class="mail-search">
+                <div class="input-group">
+                  <input type="text" class="form-control input-sm" ng-model="search_key" placeholder="Search all tasks...">
+                </div>
+              </form>
+              <div class="keep-open btn-group" title="status">
+                <button id="status-btn" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                  <i class="glyphicon glyphicon-th icon-th"></i>
+                  <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a ui-sref="task({query: 'all'})">
+                      <i class="fa fa-circle"></i>
+                      All</a>
+                  </li>
+                  <li>
+                    <a ui-sref="task({query: 'running'})">
+                      <i class="fa fa-circle text-info"></i>
+                      Running</a>
+                  </li>
+                  <li>
+                    <a ui-sref="task({query: 'staging'})">
+                      <i class="fa fa-circle text-navy"></i>
+                      Staging</a>
+                  </li>
+                  <li>
+                    <a ui-sref="task({query: 'killed'})">
+                      <i class="fa fa-circle text-warning"></i>
+                      Killed</a>
+                  </li>
+                  <li>
+                    <a ui-sref="task({query: 'failed'})">
+                      <i class="fa fa-circle text-danger"></i>
+                      Failed</a>
+                  </li>
+                  <li>
+                    <a ui-sref="task({query: 'finished'})">
+                      <i class="fa fa-circle text-primary"></i>
+                      Finished</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="table table-striped tasks">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Start Time</th>
+                  <th>Framework</th>
+                  <th>Filter</th>
+                  <th>Status</th>
+                  <th>Options</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="read" ng-repeat="job in jobs" ui-sref="main.jobDetail({jobid:job.JobId})">
+                  <td>{{job.JobId}}</td>
+                  <td>{{job.StartTime}}</td>
+                  <td>{{job.FrameKind}}</td>
+                  <td>{{job.FilterKind}}</td>
+                  <td class="">
+                    <span class="label label-{{task.label_class}}">{{job.Status}}</span>
+                  </td>
+                  <td class="mail-options">
+                    <a ng-click="kill(task)" title="kill">
+                      <span class="si-close-circle"></span>
+                    </a>
+                    <a ng-click="delete(task)" title="delete">
+                      <span class="si-trash"></span>
+                    </a>
+                    <a href="">
+                      <span class="si-file"></span>
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

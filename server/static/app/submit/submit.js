@@ -3,20 +3,20 @@
 angular.module('aptWebApp')
   .config(function($stateProvider, $urlRouterProvider) {
     $stateProvider
-      .state('submit', {
+      .state('main.submit', {
         url: '/submit',
         templateUrl: 'static/app/submit/submit.html',
         controller: 'SubmitCtrl'
       })
-      .state('submit.frame', {
+      .state('main.submit.frame', {
         url: '/frame',
         templateUrl: 'static/app/submit/submit-frame.html'
       })
-      .state('submit.selector', {
+      .state('main.submit.selector', {
         url: '/selector',
         templateUrl: 'static/app/submit/submit-selector.html'
       })
-      .state('submit.ok', {
+      .state('main.submit.ok', {
         url: '/ok',
         templateUrl: 'static/app/submit/submit-ok.html'
       });
