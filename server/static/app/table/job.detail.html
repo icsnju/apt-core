@@ -1,11 +1,11 @@
 <div class="animated fadeInRight">
   <div id="backTask">
     <a id="backUrl" href="main.jobs">
-      <i class="glyphicon glyphicon-arrow-left" style="margin-right:5px; font-size: 14px!important;"></i>Jobs
+      <i class="glyphicon glyphicon-arrow-left"></i>Jobs
     </a>
   </div>
   <div class="padContent">
-    <div class="detailContent animated fadeInRight" style="background-color: #ffffff">
+    <div class="detailContent animated fadeInRight">
       <h1>Job Detail</h1>
       <hr style="margin-top: 5px;"/>
       <ul class="detail">
@@ -103,7 +103,7 @@
                 <a ng-click="delete(task)" title="delete">
                   <span class="si-trash"></span>
                 </a>
-                <a ng-click="DownloadResult(task.deviceid,$index)">
+                <a ng-click="downloadResult(task.deviceid,$index)">
                   <span class="si-file"></span>
                 </a>
               </td>

@@ -4,18 +4,32 @@ ul.detail {
   padding: 0px;
   list-style: none;
 }
-
-ul.detail > dl{
+ul.detail > dl {
   display: inline-block;
   padding: 5px;
   vertical-align: top;
 }
-
-ul.detail > dl > dt{
+ul.detail > dl > dt {
   font-weight: bold;
   font-size: 1.2em;
 }
-
-ul.detail > dl > dd{
+ul.detail > dl > dd {
   font-size: 1.2em;
+}
+.job-bar {
+  height: 10px;
+  width: 70%;
+  margin-bottom: 0px;
+}
+.status-all {
+  color: #676A6C;
+}
+.status-success {
+  color: #1C84C6;
+}
+.status-info {
+  color: #23C6C8;
+}
+.status-danger {
+  color: #D9534F;
 }

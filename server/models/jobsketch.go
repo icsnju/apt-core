@@ -18,9 +18,9 @@ func SaveJobSketchInDB(job JobSketch) error {
 	return jobSketchCollection.Insert(job)
 }
 
-func GetJobSketchesInDB() []JobSketch {
-	jobs := make([]JobSketch, 0)
-	var job JobSketch
+func GetJobSketchesInDB() []interface{} {
+	jobs := make([]interface{}, 0)
+	var job interface{}
 	iter := jobSketchCollection.Find(nil).Iter()
 	for iter.Next(&job) {
 		jobs = append(jobs, job)

@@ -16,8 +16,7 @@
     "angular-validation-match": "~1.5.2",
     "angular-bootstrap": "~1.1.0",
     "ng-file-upload": "~12.0.1",
-    "angular-animate": "^1.5.0",
-    "bootstrap-table": "^1.10.1"
+    "angular-animate": "^1.5.0"
   },
   "devDependencies": {
     "angular-mocks": "~1.4.0"

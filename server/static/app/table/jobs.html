@@ -13,11 +13,10 @@
               <button id="task-btn" class="btn btn-block btn-primary compose-mail" ui-sref="main.submit">Add Job</button>
             </span>
             <div class="pull-right" id="input-btn">
-              <form ng-submit="search()" class="mail-search">
-                <div class="input-group">
-                  <input type="text" class="form-control input-sm" ng-model="search_key" placeholder="Search all tasks...">
-                </div>
-              </form>
+              <div class="input-group mail-search">
+                <input type="text" class="form-control input-sm" ng-model="searchKey" placeholder="Search all jobs...">
+              </div>
+
               <div class="keep-open btn-group" title="status">
                 <button id="status-btn" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                   <i class="glyphicon glyphicon-th icon-th"></i>
@@ -25,34 +24,24 @@
                 </button>
                 <ul class="dropdown-menu" role="menu">
                   <li>
-                    <a ui-sref="task({query: 'all'})">
-                      <i class="fa fa-circle"></i>
+                    <a ng-click="setStatusKey('all')">
+                      <i class="fa fa-circle status-all"></i>
                       All</a>
                   </li>
                   <li>
-                    <a ui-sref="task({query: 'running'})">
-                      <i class="fa fa-circle text-info"></i>
+                    <a ng-click="setStatusKey('run')">
+                      <i class="fa fa-circle status-info"></i>
                       Running</a>
                   </li>
                   <li>
-                    <a ui-sref="task({query: 'staging'})">
-                      <i class="fa fa-circle text-navy"></i>
-                      Staging</a>
-                  </li>
-                  <li>
-                    <a ui-sref="task({query: 'killed'})">
-                      <i class="fa fa-circle text-warning"></i>
-                      Killed</a>
-                  </li>
-                  <li>
-                    <a ui-sref="task({query: 'failed'})">
-                      <i class="fa fa-circle text-danger"></i>
-                      Failed</a>
-                  </li>
-                  <li>
-                    <a ui-sref="task({query: 'finished'})">
-                      <i class="fa fa-circle text-primary"></i>
+                    <a ng-click="setStatusKey('finish')">
+                      <i class="fa fa-circle status-success"></i>
                       Finished</a>
+                  </li>
+                  <li>
+                    <a ng-click="setStatusKey('fail')">
+                      <i class="fa fa-circle status-danger"></i>
+                      Failed</a>
                   </li>
                 </ul>
               </div>
@@ -72,13 +61,17 @@
                 </tr>
               </thead>
               <tbody>
-                <tr class="read" ng-repeat="job in jobs" ui-sref="main.jobDetail({jobid:job.JobId})">
-                  <td>{{job.JobId}}</td>
-                  <td>{{job.StartTime}}</td>
-                  <td>{{job.FrameKind}}</td>
-                  <td>{{job.FilterKind}}</td>
-                  <td class="">
-                    <span class="label label-{{task.label_class}}">{{job.Status}}</span>
+                <tr ng-repeat="job in jobs | filter:searchKey | filter:statusKey">
+                  <td>
+                    <a ui-sref="main.jobDetail({jobid:job.JobId})">{{job.jobid}}</a>
+                  </td>
+                  <td>{{job.starttime}}</td>
+                  <td>{{job.framekind}}</td>
+                  <td>{{job.filterkind}}</td>
+                  <td>
+                    <div class="job-bar progress progress-striped" title={{getPercent(job.status)}}>
+                      <div class="progress-bar progress-bar-{{getProColor(job.status)}}" aria-valuemin="0" aria-valuemax="100" style="width: {{getPercent(job.status)}};"></div>
+                    </div>
                   </td>
                   <td class="mail-options">
                     <a ng-click="kill(task)" title="kill">
