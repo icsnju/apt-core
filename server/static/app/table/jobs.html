@@ -1,96 +1,96 @@
 <div class="wrapper wrapper-content">
-  <div class="row">
-    <div class="col-sm-12 animated fadeInRight">
-      <div class="ibox">
-        <div class="ibox-title">
-          <h2>
-            Jobs | ({{jobs.length}})
-          </h2>
-        </div>
-        <div class="ibox-content mailbox-main">
-          <div class="clearfix table-tools">
-            <span class="pull-left">
-              <button id="task-btn" class="btn btn-block btn-primary compose-mail" ui-sref="main.submit">Add Job</button>
-            </span>
-            <div class="pull-right" id="input-btn">
-              <div class="input-group mail-search">
-                <input type="text" class="form-control input-sm" ng-model="searchKey" placeholder="Search all jobs...">
-              </div>
+    <div class="row">
+        <div class="col-sm-12 animated fadeInRight">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h2>
+                        Jobs | ({{jobs.length}})
+                    </h2>
+                </div>
+                <div class="ibox-content mailbox-main">
+                    <div class="clearfix table-tools">
+                        <span class="pull-left">
+                            <button id="task-btn" class="btn btn-block btn-primary compose-mail" ui-sref="main.submit">Add Job</button>
+                        </span>
+                        <div class="pull-right" id="input-btn">
+                            <div class="input-group mail-search">
+                                <input type="text" class="form-control input-sm" ng-model="searchKey" placeholder="Search all jobs...">
+                            </div>
 
-              <div class="keep-open btn-group" title="status">
-                <button id="status-btn" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                  <i class="glyphicon glyphicon-th icon-th"></i>
-                  <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu" role="menu">
-                  <li>
-                    <a ng-click="setStatusKey('all')">
-                      <i class="fa fa-circle status-all"></i>
-                      All</a>
-                  </li>
-                  <li>
-                    <a ng-click="setStatusKey('run')">
-                      <i class="fa fa-circle status-info"></i>
-                      Running</a>
-                  </li>
-                  <li>
-                    <a ng-click="setStatusKey('finish')">
-                      <i class="fa fa-circle status-success"></i>
-                      Finished</a>
-                  </li>
-                  <li>
-                    <a ng-click="setStatusKey('fail')">
-                      <i class="fa fa-circle status-danger"></i>
-                      Failed</a>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-
-          <div class="table-responsive">
-            <table class="table table-striped tasks">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Start Time</th>
-                  <th>Framework</th>
-                  <th>Filter</th>
-                  <th>Status</th>
-                  <th>Options</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr ng-repeat="job in jobs | filter:searchKey | filter:statusKey">
-                  <td>
-                    <a ui-sref="main.jobDetail({jobid:job.JobId})">{{job.jobid}}</a>
-                  </td>
-                  <td>{{job.starttime}}</td>
-                  <td>{{job.framekind}}</td>
-                  <td>{{job.filterkind}}</td>
-                  <td>
-                    <div class="job-bar progress progress-striped" title={{getPercent(job.status)}}>
-                      <div class="progress-bar progress-bar-{{getProColor(job.status)}}" aria-valuemin="0" aria-valuemax="100" style="width: {{getPercent(job.status)}};"></div>
+                            <div class="keep-open btn-group" title="status">
+                                <button id="status-btn" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                    <i class="glyphicon glyphicon-th icon-th"></i>
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li>
+                                        <a ng-click="setStatusKey('all')">
+                                            <i class="fa fa-circle status-all"></i>
+                                            All</a>
+                                    </li>
+                                    <li>
+                                        <a ng-click="setStatusKey('run')">
+                                            <i class="fa fa-circle status-info"></i>
+                                            Running</a>
+                                    </li>
+                                    <li>
+                                        <a ng-click="setStatusKey('finish')">
+                                            <i class="fa fa-circle status-success"></i>
+                                            Finished</a>
+                                    </li>
+                                    <li>
+                                        <a ng-click="setStatusKey('fail')">
+                                            <i class="fa fa-circle status-danger"></i>
+                                            Failed</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
-                  </td>
-                  <td class="mail-options">
-                    <a ng-click="kill(task)" title="kill">
-                      <span class="si-close-circle"></span>
-                    </a>
-                    <a ng-click="delete(task)" title="delete">
-                      <span class="si-trash"></span>
-                    </a>
-                    <a href="">
-                      <span class="si-file"></span>
-                    </a>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
 
-      </div>
+                    <div class="table-responsive">
+                        <table class="table table-striped tasks">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Start Time</th>
+                                    <th>Framework</th>
+                                    <th>Filter</th>
+                                    <th>Status</th>
+                                    <th>Options</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="job in jobs | filter:searchKey | filter:statusKey">
+                                    <td>
+                                        <a ui-sref="main.jobDetail({jobid:job.jobid})">{{job.jobid}}</a>
+                                    </td>
+                                    <td>{{job.starttime}}</td>
+                                    <td>{{job.framekind}}</td>
+                                    <td>{{job.filterkind}}</td>
+                                    <td>
+                                        <div class="job-bar progress progress-striped" title={{getPercent(job.status)}}>
+                                            <div class="progress-bar progress-bar-{{getProColor(job.status)}}" aria-valuemin="0" aria-valuemax="100" style="width: {{getPercent(job.status)}};"></div>
+                                        </div>
+                                    </td>
+                                    <td class="mail-options">
+                                        <a ng-click="kill(task)" title="kill">
+                                            <span class="si-close-circle"></span>
+                                        </a>
+                                        <a ng-click="delete(task)" title="delete">
+                                            <span class="si-trash"></span>
+                                        </a>
+                                        <a href="">
+                                            <span class="si-file"></span>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
     </div>
-  </div>
 </div>
