@@ -50,6 +50,5 @@ func (mf MonkeyFrame) MoveTestFile(disPath string) FrameStruct {
 	jobPath := path.Join(disPath, comm.APPNAME)
 	cmd := "cp " + mf.AppPath + " " + jobPath
 	comm.ExeCmd(cmd)
-
 	return mf
 }

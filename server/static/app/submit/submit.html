@@ -1,30 +1,31 @@
 <div class="wrapper wrapper-content">
-  <div class="row">
-    <div class="col-sm-12 animated fadeInRight">
-      <div id="form-container">
-        <div class="page-header text-center">
-          <h2>Let's Be Cool</h2>
-          <!-- the links to our nested states using relative paths -->
-          <!-- add the active class if the state matches our ui-sref -->
-          <div id="status-buttons" class="text-center">
-            <a ui-sref-active="active" ui-sref=".frame">
-              <span>1</span>
-              How</a>
-            <a ui-sref-active="active" ui-sref=".selector">
-              <span>2</span>
-              Where</a>
-            <a ui-sref-active="active" ui-sref=".ok" ng-click="checkEmpty()">
-              <span>3</span>
-              Wow</a>
-          </div>
-        </div>
+    <div class="row">
+        <div class="col-sm-12 animated fadeInRight">
+            <div id="form-container">
+                <div class="page-header text-center">
+                    <h2>Let's Be Cool</h2>
+                    <!-- the links to our nested states using relative paths -->
+                    <!-- add the active class if the state matches our ui-sref -->
+                    <div id="status-buttons">
+                        <a ui-sref-active="active" ui-sref=".frame">
+                            <span>1</span>
+                            How</a>
+                        <a ui-sref-active="active" ui-sref=".selector">
+                            <span>2</span>
+                            Where</a>
+                        <a ui-sref-active="active" ui-sref=".ok" ng-click="checkEmpty()">
+                            <span>3</span>
+                            Wow</a>
+                    </div>
+                </div>
 
-        <!-- use ng-submit to catch the form submission and use our Angular function -->
-        <form id="signup-form" name="req" ng-submit="submitJob()" novalidate>
-          <!-- our nested state views will be injected here -->
-          <div id="form-views" ui-view></div>
-        </form>
-      </div>
+                <!-- use ng-submit to catch the form submission and use our Angular function -->
+                <form id="signup-form" class="col-sm-6 col-sm-offset-3 detailContent" name="req" ng-submit="submitJob()" novalidate>
+                    <!-- our nested state views will be injected here -->
+                    <div id="form-views" ui-view></div>
+                </form>
+
+            </div>
+        </div>
     </div>
-  </div>
 </div>

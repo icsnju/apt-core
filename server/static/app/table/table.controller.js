@@ -56,6 +56,10 @@ angular.module('aptWebApp')
     .controller('DetailCtrl', function($scope, $http, $state, $stateParams, $window) {
         $scope.job = {};
         $scope.tasks = [];
+        $scope.searchKey = '';
+        $scope.statusKey = {};
+
+
         var jid = $stateParams.jobid
         $http.get('job/' + jid).then(response => {
             if (response) {
@@ -67,12 +71,58 @@ angular.module('aptWebApp')
             }
         });
 
+        //download result file frome server
         $scope.downloadResult = function(did, index) {
             if ($scope.tasks[index].state != 2) {
                 return;
             }
             var dlurl = 'download/task?deviceid=' + did + '&' + 'jobid=' + jid;
             $window.open(dlurl);
+        }
+
+        //set status search key
+        $scope.setStatusKey = function(key) {
+            // console.log(key);
+            var statusKey;
+            if (key == 'finish') {
+                statusKey = {
+                    state: 2
+                };
+            } else if (key == 'fail') {
+                statusKey = {
+                    state: 3
+                };
+            } else if (key == 'run') {
+                statusKey = function(task) {
+                    return task.state == 0 || task.state == 1;
+                }
+            } else {
+                statusKey = {};
+            }
+
+            $scope.statusKey = statusKey;
+        }
+
+        //get status of the task
+        $scope.getStatus = function(status) {
+            if (status == 0 || status == 1) {
+                return 'running';
+            } else if (status == 2) {
+                return 'finished';
+            } else {
+                return 'failed';
+            }
+        }
+
+        //get the point color relay on the task status
+        $scope.getPoColor = function(status) {
+            if (status == 3) {
+                return 'danger';
+            } else if (status == 2) {
+                return 'success';
+            } else {
+                return 'info';
+            }
         }
 
     });

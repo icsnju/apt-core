@@ -83,6 +83,7 @@ func moveTestFile(job *models.Job, control *JobController) error {
 		}
 		dist = path.Join(dist, comm.APPNAME)
 		err = control.SaveToFile("file", dist)
+
 		if err != nil {
 			return err
 		}
@@ -90,6 +91,28 @@ func moveTestFile(job *models.Job, control *JobController) error {
 		monkey := job.JobInfo.Frame.(framework.MonkeyFrame)
 		monkey.AppPath = dist
 		job.JobInfo.Frame = monkey
+	} else if job.JobInfo.FrameKind == framework.FRAME_ROBOT {
+		//move file to share path
+		dist := path.Join(config.GetSharePath(), job.JobId)
+		err := os.Mkdir(dist, os.ModePerm)
+		if err != nil {
+			return err
+		}
+		distApp := path.Join(dist, comm.APPNAME)
+		err = control.SaveToFile("app", distApp)
+		if err != nil {
+			return err
+		}
+		distTest := path.Join(dist, comm.TESTNAME)
+		err = control.SaveToFile("test", distTest)
+		if err != nil {
+			return err
+		}
+		//update framework info
+		robotium := job.JobInfo.Frame.(framework.RobotFrame)
+		robotium.AppPath = distApp
+		robotium.TestPath = distTest
+		job.JobInfo.Frame = robotium
 	}
 	return nil
 }

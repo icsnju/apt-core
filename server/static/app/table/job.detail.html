@@ -1,117 +1,109 @@
 <div class="animated fadeInRight">
-  <div id="backTask">
-    <a id="backUrl" href="main.jobs">
-      <i class="glyphicon glyphicon-arrow-left"></i>Jobs
-    </a>
-  </div>
-  <div class="padContent">
-    <div class="detailContent animated fadeInRight">
-      <h1>Job Detail</h1>
-      <hr style="margin-top: 5px;"/>
-      <ul class="detail">
-        <dl class="task-dl dl-horizontal">
-          <dt>Job ID:</dt>
-          <dd>{{job.jobid}}</dd>
-          <dt>FrameWork:</dt>
-          <dd>{{job.jobinfo.framekind}}</dd>
-          <dd>{{job.jobinfo.frame|json}}</dd>
-          <dt>Filter:</dt>
-          <dd>{{job.jobinfo.filterkind}}</dd>
-          <dd>{{job.jobinfo.filter|json}}</dd>
-          <dt>Start Time:</dt>
-          <dd>{{job.starttime}}</dd>
-          <dt>Allocated Time:</dt>
-          <dd>{{job.latesttime}}</dd>
-          <dt>Finish Time:</dt>
-          <dd>{{job.finishtime}}</dd>
-        </dl>
-      </ul>
+    <div id="backTask">
+        <a id="backUrl" href="main.jobs">
+            <i class="glyphicon glyphicon-arrow-left"></i>Jobs
+        </a>
     </div>
-  </div>
-
-  <div class="wrapper wrapper-content">
-    <div class="ibox-content mailbox-main">
-      <div class="clearfix table-tools">
-        <div class="pull-right" id="input-btn">
-          <form ng-submit="search()" class="mail-search">
-            <div class="input-group">
-              <input type="text" class="form-control input-sm" ng-model="search_key" placeholder="Search all tasks...">
-            </div>
-          </form>
-          <div class="keep-open btn-group" title="status">
-            <button id="status-btn" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-              <i class="glyphicon glyphicon-th icon-th"></i>
-              <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu" role="menu">
-              <li>
-                <a ui-sref="task({query: 'all'})">
-                  <i class="fa fa-circle"></i>
-                  All</a>
-              </li>
-              <li>
-                <a ui-sref="task({query: 'running'})">
-                  <i class="fa fa-circle text-info"></i>
-                  Running</a>
-              </li>
-              <li>
-                <a ui-sref="task({query: 'staging'})">
-                  <i class="fa fa-circle text-navy"></i>
-                  Staging</a>
-              </li>
-              <li>
-                <a ui-sref="task({query: 'killed'})">
-                  <i class="fa fa-circle text-warning"></i>
-                  Killed</a>
-              </li>
-              <li>
-                <a ui-sref="task({query: 'failed'})">
-                  <i class="fa fa-circle text-danger"></i>
-                  Failed</a>
-              </li>
-              <li>
-                <a ui-sref="task({query: 'finished'})">
-                  <i class="fa fa-circle text-primary"></i>
-                  Finished</a>
-              </li>
+    <div class="padContent">
+        <div class="detailContent animated fadeInRight">
+            <h1>Job Detail</h1>
+            <hr style="margin-top: 5px;"/>
+            <ul class="detail">
+                <dl class="task-dl dl-horizontal">
+                    <dt>Job ID:</dt>
+                    <dd>{{job.jobid}}</dd>
+                    <dt>FrameWork:</dt>
+                    <dd>{{job.jobinfo.framekind}}</dd>
+                    <dd>{{job.jobinfo.frame|json}}</dd>
+                    <dt>Filter:</dt>
+                    <dd>{{job.jobinfo.filterkind}}</dd>
+                    <dd>{{job.jobinfo.filter|json}}</dd>
+                    <dt>Start Time:</dt>
+                    <dd>{{job.starttime}}</dd>
+                    <dt>Allocated Time:</dt>
+                    <dd>{{job.latesttime}}</dd>
+                    <dt>Finish Time:</dt>
+                    <dd>{{job.finishtime}}</dd>
+                </dl>
             </ul>
-          </div>
         </div>
-      </div>
-
-      <div class="table-responsive">
-        <table class="table table-striped tasks">
-          <thead>
-            <tr>
-              <th>Device ID</th>
-              <th>StartTime</th>
-              <th>FinishTime</th>
-              <th>State</th>
-              <th>Options</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr class="read" ng-repeat="task in tasks">
-              <td>{{task.deviceid}}</td>
-              <td>{{task.starttime}}</td>
-              <td>{{task.finishtime}}</td>
-              <td>{{task.state}}</td>
-              <td class="mail-options">
-                <a ng-click="kill(task)" title="kill">
-                  <span class="si-close-circle"></span>
-                </a>
-                <a ng-click="delete(task)" title="delete">
-                  <span class="si-trash"></span>
-                </a>
-                <a ng-click="downloadResult(task.deviceid,$index)">
-                  <span class="si-file"></span>
-                </a>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
     </div>
-  </div>
+
+    <div class="wrapper wrapper-content">
+        <div class="ibox-content mailbox-main">
+            <div class="clearfix table-tools">
+                <div class="pull-right" id="input-btn">
+
+                    <div class="input-group mail-search">
+                        <input type="text" class="form-control input-sm" ng-model="searchKey" placeholder="Search all jobs...">
+                    </div>
+
+                    <div class="keep-open btn-group" title="status">
+                        <button id="status-btn" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                            <i class="glyphicon glyphicon-th icon-th"></i>
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            <li>
+                                <a ng-click="setStatusKey('all')">
+                                    <i class="fa fa-circle status-all"></i>
+                                    All</a>
+                            </li>
+                            <li>
+                                <a ng-click="setStatusKey('run')">
+                                    <i class="fa fa-circle status-info"></i>
+                                    Running</a>
+                            </li>
+                            <li>
+                                <a ng-click="setStatusKey('finish')">
+                                    <i class="fa fa-circle status-success"></i>
+                                    Finished</a>
+                            </li>
+                            <li>
+                                <a ng-click="setStatusKey('fail')">
+                                    <i class="fa fa-circle status-danger"></i>
+                                    Failed</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-striped tasks">
+                    <thead>
+                        <tr>
+                            <th>Device ID</th>
+                            <th>StartTime</th>
+                            <th>FinishTime</th>
+                            <th>State</th>
+                            <th>Options</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="read" ng-repeat="task in tasks | filter:searchKey | filter:statusKey">
+                            <td>{{task.deviceid}}</td>
+                            <td>{{task.starttime}}</td>
+                            <td>{{task.finishtime}}</td>
+                            <td>
+                                <i class="fa fa-circle status-{{getPoColor(task.state)}}" title={{getStatus(task.state)}}></i>
+                            </td>
+                            <td class="mail-options">
+                                <a ng-click="kill(task)" title="kill">
+                                    <span class="si-close-circle"></span>
+                                </a>
+                                <a ng-click="delete(task)" title="delete">
+                                    <span class="si-trash"></span>
+                                </a>
+                                <a ng-click="downloadResult(task.deviceid,$index)">
+                                    <span class="si-file"></span>
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 
 </div>
