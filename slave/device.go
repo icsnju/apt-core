@@ -3,9 +3,11 @@ package main
 import (
 	"apsaras/comm"
 	"apsaras/comm/comp"
+	"apsaras/comm/framework"
 	"encoding/json"
 	"io/ioutil"
 	"log"
+	"path"
 	"sync"
 	"time"
 )
@@ -29,7 +31,8 @@ func (m *DeviceManager) loopUpdate() {
 }
 
 func (m *DeviceManager) updateDevInfo() {
-	comm.ExeCmd(GET_DEVICE_CMD + " " + getAdbPath())
+	adb := path.Join(getAndroidSDKPath(), framework.ADB_PATH)
+	comm.ExeCmd(GET_DEVICE_CMD + " " + adb)
 
 	exist, err := comm.FileExists("dinfo.json")
 	if !exist {

@@ -18,7 +18,7 @@ type MonkeyFrame struct {
 }
 
 //Roborium executor
-func (mf MonkeyFrame) TaskExecutor(jobId, deviceId string) {
+func (mf MonkeyFrame) TaskExecutor(jobId, deviceId, sdkPath string) {
 	outPath := path.Join(jobId, deviceId, OUTPATH)
 
 	file, err := os.Create(outPath)
@@ -26,18 +26,18 @@ func (mf MonkeyFrame) TaskExecutor(jobId, deviceId string) {
 		fmt.Println("InstallFrame create out file err!")
 		fmt.Println(err)
 	}
-
+	var adb = path.Join(sdkPath, ADB_PATH)
 	var out string = ""
 
-	cmd := "adb -s" + deviceId + " uninstall " + mf.PkgName
+	cmd := adb + " -s" + deviceId + " uninstall " + mf.PkgName
 	comm.ExeCmd(cmd)
-	cmd = "adb -s " + deviceId + " install " + mf.AppPath
+	cmd = adb + " -s " + deviceId + " install " + mf.AppPath
 	out += comm.ExeCmd(cmd)
 	//	cmd = "sleep 120"
 	//	comm.ExeCmd(cmd)
-	cmd = "adb -s " + deviceId + " shell monkey -p " + mf.PkgName + " " + mf.Argu
+	cmd = adb + " -s " + deviceId + " shell monkey -p " + mf.PkgName + " " + mf.Argu
 	out += comm.ExeCmd(cmd)
-	cmd = "adb -s " + deviceId + " uninstall " + mf.PkgName
+	cmd = adb + " -s " + deviceId + " uninstall " + mf.PkgName
 	comm.ExeCmd(cmd)
 
 	file.WriteString(out)

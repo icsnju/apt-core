@@ -155,7 +155,7 @@ func runTask(ts comp.RunTask) {
 		ts.TaskInfo.State = comp.TASK_FAIL
 	} else {
 		//start task
-		ts.Frame.TaskExecutor(jobId, devId)
+		ts.Frame.TaskExecutor(jobId, devId, getAndroidSDKPath())
 		ts.TaskInfo.FinishTime = time.Now()
 		ts.TaskInfo.State = comp.TASK_COMPLETE
 	}

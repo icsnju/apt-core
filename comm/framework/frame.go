@@ -6,12 +6,13 @@ const (
 	FRAME_ROBOT   = "robotium"
 	FRAME_MONKEY  = "monkey"
 	FRAME_INSTALL = "install"
+	ADB_PATH      = "platform-tools/adb"
 )
 
 //Framework
 //framework interface
 type FrameStruct interface {
-	TaskExecutor(jobId, deviceId string)
+	TaskExecutor(jobId, deviceId, sdkPath string)
 	MoveTestFile(disPath string) FrameStruct
 }
 

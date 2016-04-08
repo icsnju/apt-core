@@ -15,7 +15,7 @@ type InstallFrame struct {
 }
 
 //Roborium executor
-func (f InstallFrame) TaskExecutor(jobId, deviceId string) {
+func (f InstallFrame) TaskExecutor(jobId, deviceId, sdkPath string) {
 	outPath := path.Join(jobId, deviceId, OUTPATH)
 	file, err := os.Create(outPath)
 	if err != nil {

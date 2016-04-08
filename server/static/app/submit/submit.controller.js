@@ -15,6 +15,9 @@ angular.module('aptWebApp')
         $scope.selectorErr = false;
         var idList = [];
 
+        $scope.select = {
+            checkAll: false
+        };
 
         //get devices from server
         $http.get('device').then(response => {
@@ -26,6 +29,7 @@ angular.module('aptWebApp')
             }
         });
 
+        //check if this form is not completed
         $scope.checkEmpty = function() {
 
             //get all selected devices
@@ -91,7 +95,12 @@ angular.module('aptWebApp')
             }, function(resp) {
                 console.log('Error status: ' + resp.status);
             });
+        }
 
+        $scope.clickTopBox = function() {
+            angular.forEach($scope.devices, function(device) {
+                device.check = $scope.select.checkAll;
+            });
         }
 
     });

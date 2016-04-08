@@ -13,11 +13,11 @@ type RobotFrame struct {
 }
 
 //Roborium executor
-func (bf RobotFrame) TaskExecutor(jobId, deviceId string) {
+func (bf RobotFrame) TaskExecutor(jobId, deviceId, sdkPath string) {
 	outPath := path.Join(jobId, deviceId)
 	cmd := "java  -Djava.awt.headless=true -jar spoon-runner.jar --apk " + bf.AppPath
-	cmd += " --test-apk " + bf.TestPath + " --output " + outPath + " --sdk /Users/Tianchi/Tool/sdk/ "
-	cmd += "-serial " + deviceId
+	cmd += " --test-apk " + bf.TestPath + " --output " + outPath + " --sdk " + sdkPath
+	cmd += " -serial " + deviceId
 	comm.ExeCmd(cmd)
 }
 

@@ -1,29 +1,41 @@
-<table class="table table-striped table-bordered table-hover">
-  <thead>
-    <tr>
-      <th>ID</th>
-      <th>Manufacturers</th>
-      <th>Model</th>
-      <th>BuildVersion</th>
-      <th>API</th>
-      <th>Select</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr ng-repeat="device in devices">
-      <td>{{device.Id}}</td>
-      <td>{{device.Manu}}</td>
-      <td>{{device.Model}}</td>
-      <td>{{device.BuildVersion}}</td>
-      <td>{{device.Api}}</td>
-      <td><input type="checkbox" ng-model="device.check"></td>
-    </tr>
-  </tbody>
-</table>
+<div class="clearfix table-tools">
+    <div class="pull-right" id="input-btn">
+
+        <div class="input-group mail-search">
+            <input type="text" class="form-control input-sm" ng-model="searchKey" placeholder="Search all devices...">
+        </div>
+
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-striped tasks">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Manufacturers</th>
+                <th>Model</th>
+                <th>BuildVersion</th>
+                <th>API</th>
+                <th><input type="checkbox" ng-model="select.checkAll" ng-click="clickTopBox()"></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="read" ng-repeat="device in devices | filter:searchKey">
+                <td>{{device.Id}}</td>
+                <td>{{device.Manu}}</td>
+                <td>{{device.Model}}</td>
+                <td>{{device.BuildVersion}}</td>
+                <td>{{device.Api}}</td>
+                <td><input type="checkbox" ng-model="device.check"></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 
 <div class="form-group row text-center">
     <a ui-sref="main.submit.ok" class="btn btn-info" ng-click="checkEmpty()">
-      Next Section
-      <span class="glyphicon glyphicon-circle-arrow-right"></span>
+        Next Step
+        <span class="glyphicon glyphicon-circle-arrow-right"></span>
     </a>
 </div>

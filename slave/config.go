@@ -9,7 +9,7 @@ import (
 type SlaConf struct {
 	SharePath string
 	ServerIP  string
-	AdbPath   string
+	SDKPath   string
 }
 
 var configPath = "slave.json"
@@ -35,6 +35,6 @@ func getServerIP() string {
 	return configuration.ServerIP
 }
 
-func getAdbPath() string {
-	return configuration.AdbPath
+func getAndroidSDKPath() string {
+	return configuration.SDKPath
 }
