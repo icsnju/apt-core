@@ -218,8 +218,14 @@ func SaveJobInDB(job Job) error {
 }
 
 //Get this job in db
-func GetJobInDB(id string) (interface{}, error) {
+func GetJobFaceInDB(id string) (interface{}, error) {
 	var job interface{}
+	err := jobCollection.Find(bson.M{JOB_ID: id}).One(&job)
+	return job, err
+}
+
+func GetJobInDB(id string) (Job, error) {
+	var job Job
 	err := jobCollection.Find(bson.M{JOB_ID: id}).One(&job)
 	return job, err
 }
@@ -229,5 +235,12 @@ func UpdateJobInDB(id string, update interface{}) {
 	err := jobCollection.Update(bson.M{JOB_ID: id}, update)
 	if err != nil {
 		log.Println("job update err in db :", err)
+	}
+}
+
+func DeleteJobInDB(id string) {
+	err := jobCollection.Remove(bson.M{JOB_ID: id})
+	if err != nil {
+		log.Println("job sketch delete err in db :", err)
 	}
 }

@@ -34,3 +34,11 @@ func UpdateJobSketchInDB(id string, update interface{}) {
 		log.Println("job sketch update err in db :", err)
 	}
 }
+
+func DeleteJobSketchInDB(id string) {
+	log.Println("Delete Job sketch", id)
+	err := jobSketchCollection.Remove(bson.M{JOB_ID: id})
+	if err != nil {
+		log.Println("job sketch delete err in db :", err)
+	}
+}

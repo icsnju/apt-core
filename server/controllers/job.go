@@ -27,7 +27,7 @@ func (this *JobController) ListJobs() {
 //Get a job by id
 func (this *JobController) GetJob() {
 	id := this.Ctx.Input.Param(":id")
-	job, err := models.GetJobInDB(id)
+	job, err := models.GetJobFaceInDB(id)
 	if err != nil {
 		this.Ctx.Output.SetStatus(404)
 		this.Ctx.Output.Body([]byte("Job not found"))
@@ -71,6 +71,33 @@ func (this *JobController) CreateJob() {
 	}
 	//add job in master
 	master.AddJobInMaster(job)
+}
+
+//Update job
+func (this *JobController) UpdateJob() {
+	this.Ctx.Output.SetStatus(200)
+	id := this.Ctx.Input.Param(":id")
+	//kill a job
+	master.KillJob(id)
+}
+
+func (this *JobController) DeleteJob() {
+	this.Ctx.Output.SetStatus(200)
+	id := this.Ctx.Input.Param(":id")
+	if master.IsFinished(id) {
+		models.DeleteJobSketchInDB(id)
+		models.DeleteJobInDB(id)
+		resultPath := path.Join(config.GetSharePath(), id)
+		err := os.RemoveAll(resultPath)
+		if err != nil {
+			log.Println(err)
+		}
+		resultPath = path.Join(config.GetSharePath(), id+".zip")
+		err = os.Remove(resultPath)
+		if err != nil {
+			log.Println(err)
+		}
+	}
 }
 
 func moveTestFile(job *models.Job, control *JobController) error {
@@ -123,12 +150,53 @@ func (this *JobController) GetTaskResult() {
 	did := this.GetString("deviceid")
 
 	resultPath := path.Join(config.GetSharePath(), jid, did)
+	ex, err := comm.FileExists(resultPath)
+	if !ex || err != nil {
+		log.Println(err)
+		return
+	}
+
 	zipPath := path.Join(config.GetSharePath(), jid, did+".zip")
-	err := comm.Zipit(resultPath, zipPath)
+	ex, err = comm.FileExists(zipPath)
 	if err != nil {
 		log.Println(err)
 		return
 	}
+	if !ex {
+		err := comm.Zipit(resultPath, zipPath)
+		if err != nil {
+			log.Println(err)
+			return
+		}
+	}
 	name := jid + "_" + did + ".zip"
+	this.Ctx.Output.Download(zipPath, name)
+}
+
+//Get job result
+func (this *JobController) GetJobResult() {
+	jid := this.GetString("jobid")
+
+	resultPath := path.Join(config.GetSharePath(), jid)
+	ex, err := comm.FileExists(resultPath)
+	if !ex || err != nil {
+		log.Println(err)
+		return
+	}
+
+	zipPath := path.Join(config.GetSharePath(), jid+".zip")
+	ex, err = comm.FileExists(zipPath)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	if !ex {
+		err := comm.Zipit(resultPath, zipPath)
+		if err != nil {
+			log.Println(err)
+			return
+		}
+	}
+	name := jid + ".zip"
 	this.Ctx.Output.Download(zipPath, name)
 }

@@ -71,19 +71,13 @@ func getWaitTasks(ip string) comp.RunTaskList {
 	for id, ds := range slave.DeviceStates {
 		if ds.State == comp.DEVICE_FREE {
 
-			bestJobId := jobManager.findBestJob(id) //TODO
-			if bestJobId != "-1" {
+			rt, ex := jobManager.findBestJob(id) //TODO
+			if ex {
 				//udpate slave information
 				slaveManager.updateSlaveDeviceState(ip, id, comp.DEVICE_RUN)
 
-				//update job information
-				jobManager.updateJobTaskState(bestJobId, id, comp.TASK_RUN)
-
-				//create run task
-				rt := jobManager.createRuntask(bestJobId, id)
-
 				taskList.Tasks = append(taskList.Tasks, rt)
-				log.Println("Send task " + bestJobId + "--" + id + " to: " + ip)
+				log.Println("Send task " + rt.TaskInfo.JobId + "--" + id + " to: " + ip)
 			}
 		}
 	}

@@ -77,7 +77,7 @@
                             <th>StartTime</th>
                             <th>FinishTime</th>
                             <th>State</th>
-                            <th>Options</th>
+                            <th>Result</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -86,16 +86,12 @@
                             <td>{{task.starttime}}</td>
                             <td>{{task.finishtime}}</td>
                             <td>
-                                <i class="fa fa-circle status-{{getPoColor(task.state)}}" title={{getStatus(task.state)}}></i>
+                                <a>
+                                    <i class="fa fa-circle status-{{getPoColor(task.state)}}" title={{getStatus(task.state)}}></i>
+                                </a>
                             </td>
-                            <td class="mail-options">
-                                <a ng-click="kill(task)" title="kill">
-                                    <span class="si-close-circle"></span>
-                                </a>
-                                <a ng-click="delete(task)" title="delete">
-                                    <span class="si-trash"></span>
-                                </a>
-                                <a ng-click="downloadResult(task.deviceid,$index)">
+                            <td>
+                                <a class="mail-{{getDownAble(task.state)}}" ng-click="downloadResult(task.deviceid,$index)">
                                     <span class="si-file"></span>
                                 </a>
                             </td>

@@ -1,11 +1,12 @@
 'use strict';
 
 angular.module('aptWebApp')
-    .controller('JobCtrl', function($scope, $http, $state) {
+    .controller('JobCtrl', function($scope, $http, $window) {
         $scope.jobs = [];
         $scope.searchKey = '';
         $scope.statusKey = {};
 
+        //set status filter key
         $scope.setStatusKey = function(key) {
             // console.log(key);
             var statusKey;
@@ -28,6 +29,7 @@ angular.module('aptWebApp')
             $scope.statusKey = statusKey;
         }
 
+        //get progress
         $scope.getPercent = function(status) {
             if (status == -1) {
                 return '100%';
@@ -36,6 +38,7 @@ angular.module('aptWebApp')
             }
         }
 
+        //get progress bar color
         $scope.getProColor = function(status) {
             if (status < 0) {
                 return 'danger';
@@ -46,6 +49,74 @@ angular.module('aptWebApp')
             }
         }
 
+        //if this option clickable
+        $scope.getClickAble = function(status, type) {
+            if (type == 'kill') {
+                if (status >= 0 && status < 100) {
+                    return 'options';
+                } else {
+                    return 'nooptions'
+                }
+            } else {
+                if (status >= 0 && status < 100) {
+                    return 'nooptions';
+                } else {
+                    return 'options'
+                }
+            }
+        }
+
+        //kill a job
+        $scope.killJob = function(id, status) {
+            if (status < 0 || status >= 100) {
+                return;
+            }
+
+            $http.put('job/' + id)
+                .then(
+                    function(res) {
+                        $http.get('job').then(response => {
+                            if (response) {
+                                $scope.jobs = response.data;
+                            }
+                        });
+                    },
+                    function(res) {
+                        console.log('Error status: ' + res.status);
+                    }
+                );
+        }
+
+        //delete a job
+        $scope.deleteJob = function(id, status) {
+            if (status >= 0 && status < 100) {
+                return;
+            }
+
+            $http.delete('job/' + id)
+                .then(
+                    function(res) {
+                        $http.get('job').then(response => {
+                            if (response) {
+                                $scope.jobs = response.data;
+                            }
+                        });
+                    },
+                    function(res) {
+                        console.log('Error status: ' + res.status);
+                    }
+                );
+        }
+
+        //download testing result of this job
+        $scope.downloadJob = function(id, status) {
+            if (status >= 0 && status < 100) {
+                return;
+            }
+            var dlurl = 'download/job?jobid=' + id;
+            $window.open(dlurl);
+        }
+
         $http.get('job').then(response => {
             if (response) {
                 $scope.jobs = response.data;
@@ -53,7 +124,7 @@ angular.module('aptWebApp')
         });
 
     })
-    .controller('DetailCtrl', function($scope, $http, $state, $stateParams, $window) {
+    .controller('DetailCtrl', function($scope, $http, $stateParams, $window) {
         $scope.job = {};
         $scope.tasks = [];
         $scope.searchKey = '';
@@ -122,6 +193,15 @@ angular.module('aptWebApp')
                 return 'success';
             } else {
                 return 'info';
+            }
+        }
+
+        //get the point color relay on the task status
+        $scope.getDownAble = function(status) {
+            if (status == 2) {
+                return 'options';
+            } else {
+                return 'nooptions';
             }
         }
 

@@ -23,7 +23,16 @@ func CreateJob(subjob models.SubJob) models.Job {
 	return job
 }
 
+//Kill a job
+func KillJob(id string) {
+	jobManager.killJob(id)
+}
+
 //Add this job in master
 func AddJobInMaster(job models.Job) {
 	jobManager.addJob(job)
+}
+
+func IsFinished(id string) bool {
+	return !jobManager.contain(id)
 }

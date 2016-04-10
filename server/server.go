@@ -16,9 +16,9 @@ func startServer() {
 	beego.LoadAppConfig("ini", config.APPCONFIG)
 	//api
 	beego.Router("/job", &controllers.JobController{}, "get:ListJobs;post:CreateJob")
-	beego.Router("/job/:id", &controllers.JobController{}, "get:GetJob")
+	beego.Router("/job/:id", &controllers.JobController{}, "get:GetJob;put:UpdateJob;delete:DeleteJob")
 	beego.Router("/download/task", &controllers.JobController{}, "get:GetTaskResult")
-
+	beego.Router("/download/job", &controllers.JobController{}, "get:GetJobResult")
 	beego.Router("/device", &controllers.DeviceController{}, "get:ListDevices")
 
 	//html

@@ -73,14 +73,14 @@
                                             <div class="progress-bar progress-bar-{{getProColor(job.status)}}" aria-valuemin="0" aria-valuemax="100" style="width: {{getPercent(job.status)}};"></div>
                                         </div>
                                     </td>
-                                    <td class="mail-options">
-                                        <a ng-click="kill(task)" title="kill">
+                                    <td>
+                                        <a class="mail-{{getClickAble(job.status,'kill')}}" ng-click="killJob(job.jobid,job.status)" title="kill">
                                             <span class="si-close-circle"></span>
                                         </a>
-                                        <a ng-click="delete(task)" title="delete">
+                                        <a class="mail-{{getClickAble(job.status,'delete')}}" ng-click="deleteJob(job.jobid,job.status)" title="delete">
                                             <span class="si-trash"></span>
                                         </a>
-                                        <a href="">
+                                        <a class="mail-{{getClickAble(job.status,'download')}}" ng-click="downloadJob(job.jobid,job.status)" title="download">
                                             <span class="si-file"></span>
                                         </a>
                                     </td>

@@ -43,7 +43,10 @@ func (m *JobManager) addJob(job models.Job) {
 
 func (m *JobManager) deleteJob(id string) {
 	m.jobLock.Lock()
-	delete(m.jobMap, id)
+	_, ex := m.jobMap[id]
+	if ex {
+		delete(m.jobMap, id)
+	}
 	m.jobLock.Unlock()
 }
 
@@ -120,7 +123,7 @@ func (m *JobManager) findOldJob(id string) string {
 }
 
 //find the best job
-func (m *JobManager) findBestJob(id string) string {
+func (m *JobManager) findBestJob(id string) (comp.RunTask, bool) {
 	var maxPriority float64 = -1
 	var count1 int = 0
 	var maxJob1 string = "-1"
@@ -129,6 +132,7 @@ func (m *JobManager) findBestJob(id string) string {
 	var count2 int = 0
 	var maxJob2 string = "-1"
 
+	bestId := "-1"
 	//find a good job
 	m.jobLock.Lock()
 	for ke, jo := range m.jobMap {
@@ -150,39 +154,78 @@ func (m *JobManager) findBestJob(id string) string {
 			}
 		}
 	}
-	m.jobLock.Unlock()
 
 	sum := count1 + count2
 	if sum <= 0 {
-		return "-1"
-	}
-
-	rand.Seed(time.Now().UnixNano())
-	lottery := rand.Intn(count1 + count2)
-	if lottery < count1 {
-		return maxJob1
+		bestId = "-1"
 	} else {
-		return maxJob2
+		rand.Seed(time.Now().UnixNano())
+		lottery := rand.Intn(count1 + count2)
+		if lottery < count1 {
+			bestId = maxJob1
+		} else {
+			bestId = maxJob2
+		}
 	}
-}
 
-func (m *JobManager) updateJobTaskState(jobId, taskId string, state int) {
-	m.jobLock.Lock()
-	job := m.jobMap[jobId]
-	task := job.TaskMap[taskId]
-	task.State = state
-	task.StartTime = time.Now()
-	job.TaskMap[taskId] = task
-	job.LatestTime = time.Now()
-	m.jobMap[jobId] = job
+	var rt comp.RunTask
+	var exit = false
+	if bestId != "-1" {
+		m.updateJobTaskState(bestId, id, comp.TASK_RUN)
+		rt = m.createRuntask(bestId, id)
+		exit = true
+	}
 	m.jobLock.Unlock()
+	return rt, exit
 }
 
+//For func findBestJob only
 func (m *JobManager) createRuntask(jobid, id string) comp.RunTask {
 	var rt comp.RunTask
 	rt.Frame = m.jobMap[jobid].JobInfo.Frame
 	rt.TaskInfo = m.jobMap[jobid].TaskMap[id]
 	return rt
+}
+
+//For func findBestJob only
+func (m *JobManager) updateJobTaskState(jobId, taskId string, state int) {
+	job, ex := m.jobMap[jobId]
+	if ex {
+		task := job.TaskMap[taskId]
+		task.State = state
+		task.StartTime = time.Now()
+		job.TaskMap[taskId] = task
+		job.LatestTime = time.Now()
+		m.jobMap[jobId] = job
+	}
+}
+
+func (m *JobManager) killJob(id string) {
+	m.jobLock.Lock()
+	job, ex := m.jobMap[id]
+	if ex {
+		isFail := false
+		for tid, task := range job.TaskMap {
+			if task.State != comp.TASK_COMPLETE && task.State != comp.TASK_FAIL {
+				task.State = comp.TASK_FAIL
+				task.FinishTime = time.Now()
+				job.TaskMap[tid] = task
+				isFail = true
+			}
+		}
+		job.FinishTime = time.Now()
+		var update map[string]interface{}
+		//update job in db
+		if isFail {
+			update = bson.M{"$set": bson.M{models.JOB_STATUS: -1}}
+		} else {
+			update = bson.M{"$set": bson.M{models.JOB_STATUS: 100}}
+		}
+		models.UpdateJobSketchInDB(id, update)
+		models.UpdateJobInDB(id, job)
+		delete(m.jobMap, id)
+	}
+	m.jobLock.Unlock()
 }
 
 //Start find finished job cyclically
@@ -229,4 +272,12 @@ func (m *JobManager) updateJobInDB() {
 
 		time.Sleep(comm.HEARTTIME)
 	}
+}
+
+func (m *JobManager) contain(id string) bool {
+	var ex bool
+	m.jobLock.Lock()
+	_, ex = m.jobMap[id]
+	m.jobLock.Unlock()
+	return ex
 }
