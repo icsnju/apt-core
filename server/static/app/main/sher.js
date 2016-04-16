@@ -14,6 +14,10 @@ function SmoothlyMenu() {
 $(document).ready(function() {
     // 边栏缩小
     $(document).on("click", ".navbar-minimalize", function() {
+        if ($("body").hasClass("mini-navbar"))
+            $(".change-img").attr("src", "static/assets/images/logo1.png");
+        else
+            $(".change-img").attr("src", "static/assets/images/logo2.png");
         $("body").toggleClass("mini-navbar");
         SmoothlyMenu();
     })

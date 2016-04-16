@@ -691,7 +691,7 @@ h1, h2, h3, h4, h5, p {
     text-align: center;
 }
 .sidebar .brand-top img {
-    width: 50px;
+    height: 55px;
     padding: 5px;
     display: inline-block;
 }

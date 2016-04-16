@@ -17,8 +17,12 @@
                                 <input type="text" class="form-control input-sm" ng-model="searchKey" placeholder="Search all jobs...">
                             </div>
 
-                            <div class="keep-open btn-group" title="status">
-                                <button id="status-btn" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                            <div class="keep-open btn-group" >
+                                <button type="button" id="status-btn" class="btn btn-default" title="refresh" ng-click="refresh()">
+                                    <i class="glyphicon glyphicon-refresh icon-refresh"></i>
+                                </button>
+
+                                <button id="status-btn" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" title="status">
                                     <i class="glyphicon glyphicon-th icon-th"></i>
                                     <span class="caret"></span>
                                 </button>

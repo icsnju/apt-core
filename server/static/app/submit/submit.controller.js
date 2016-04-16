@@ -20,14 +20,17 @@ angular.module('aptWebApp')
         };
 
         //get devices from server
-        $http.get('device').then(response => {
-            if (response) {
-                $scope.devices = response.data;
-                for (var i = 0; i < $scope.devices.length; i++) {
-                    $scope.devices[i].check = false;
+        $scope.refresh = function() {
+            $http.get('device').then(response => {
+                if (response) {
+                    $scope.devices = response.data;
+                    for (var i = 0; i < $scope.devices.length; i++) {
+                        $scope.devices[i].check = false;
+                    }
                 }
-            }
-        });
+            });
+        }
+        $scope.refresh();
 
         //check if this form is not completed
         $scope.checkEmpty = function() {

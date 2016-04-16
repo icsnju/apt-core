@@ -117,12 +117,16 @@ angular.module('aptWebApp')
             $window.open(dlurl);
         }
 
-        $http.get('job').then(response => {
-            if (response) {
-                $scope.jobs = response.data;
-            }
-        });
+        //update jobs status
+        $scope.refresh = function() {
+            $http.get('job').then(response => {
+                if (response) {
+                    $scope.jobs = response.data;
+                }
+            });
+        }
 
+        $scope.refresh();
     })
     .controller('DetailCtrl', function($scope, $http, $stateParams, $window) {
         $scope.job = {};
@@ -131,16 +135,22 @@ angular.module('aptWebApp')
         $scope.statusKey = {};
 
 
-        var jid = $stateParams.jobid
-        $http.get('job/' + jid).then(response => {
-            if (response) {
-                $scope.job = response.data;
-                var taskmap = $scope.job.taskmap;
-                for (var key in taskmap) {
-                    $scope.tasks.push(taskmap[key]);
+        var jid = $stateParams.jobid;
+
+        $scope.refresh = function() {
+            $http.get('job/' + jid).then(response => {
+                if (response) {
+                    $scope.job = response.data;
+                    var taskmap = $scope.job.taskmap;
+                    $scope.tasks = [];
+                    for (var key in taskmap) {
+                        $scope.tasks.push(taskmap[key]);
+                    }
                 }
-            }
-        });
+            });
+        }
+
+        $scope.refresh();
 
         //download result file frome server
         $scope.downloadResult = function(did, index) {
