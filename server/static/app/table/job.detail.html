@@ -1,6 +1,6 @@
 <div class="animated fadeInRight">
     <div id="backTask">
-        <a id="backUrl" href="main.jobs">
+        <a id="backUrl" ui-sref="main.jobs">
             <i class="glyphicon glyphicon-arrow-left"></i>Jobs
         </a>
     </div>
@@ -61,6 +61,11 @@
                                 <a ng-click="setStatusKey('finish')">
                                     <i class="fa fa-circle status-success"></i>
                                     Finished</a>
+                            </li>
+                            <li>
+                                <a ng-click="setStatusKey('wait')">
+                                    <i class="fa fa-circle status-wait"></i>
+                                    Waiting</a>
                             </li>
                             <li>
                                 <a ng-click="setStatusKey('fail')">

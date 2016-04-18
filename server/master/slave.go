@@ -2,6 +2,7 @@ package master
 
 import (
 	"apsaras/comm/comp"
+	"apsaras/server/models"
 	"sync"
 )
 
@@ -42,8 +43,27 @@ func (m *SlaveManager) addSlave(slave comp.SlaveInfo) bool {
 	return ok
 }
 
-func (m *SlaveManager) getSlave(ip string) comp.SlaveInfo {
-	return m.slavesMap[ip]
+func (m *SlaveManager) getSlave(ip string) (comp.SlaveInfo, bool) {
+	var slave comp.SlaveInfo
+	ex := false
+	m.slavesLock.Lock()
+	slave, ex = m.slavesMap[ip]
+	m.slavesLock.Unlock()
+	return slave, ex
+}
+
+func (m *SlaveManager) getSlaveSketches() []models.SlaveSketch {
+	slaves := make([]models.SlaveSketch, 0)
+	m.slavesLock.Lock()
+	for _, slave := range m.slavesMap {
+		var s models.SlaveSketch
+		s.IP = slave.IP
+		s.DevNum = len(slave.DeviceStates)
+		s.TaskNum = len(slave.TaskStates)
+		slaves = append(slaves, s)
+	}
+	m.slavesLock.Unlock()
+	return slaves
 }
 
 func (m *SlaveManager) removeSlave(ip string) {
@@ -54,10 +74,12 @@ func (m *SlaveManager) removeSlave(ip string) {
 
 func (m *SlaveManager) updateSlaveDeviceState(ip, id string, state int) {
 	m.slavesLock.Lock()
-	slave := m.slavesMap[ip]
-	dev := slave.DeviceStates[id]
-	dev.State = state
-	slave.DeviceStates[id] = dev
-	m.slavesMap[ip] = slave
+	slave, ex := m.slavesMap[ip]
+	if ex {
+		dev := slave.DeviceStates[id]
+		dev.State = state
+		slave.DeviceStates[id] = dev
+		m.slavesMap[ip] = slave
+	}
 	m.slavesLock.Unlock()
 }

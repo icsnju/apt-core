@@ -36,3 +36,12 @@ func AddJobInMaster(job models.Job) {
 func IsFinished(id string) bool {
 	return !jobManager.contain(id)
 }
+
+//Get sketches of slaves
+func GetSlaveSketches() []models.SlaveSketch {
+	return slaveManager.getSlaveSketches()
+}
+
+func GetSlave(IP string) (comp.SlaveInfo, bool) {
+	return slaveManager.getSlave(IP)
+}

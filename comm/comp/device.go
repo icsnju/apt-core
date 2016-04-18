@@ -43,8 +43,7 @@ type DeviceInfo struct {
 //device detail
 //device information, slave ip, state
 type Device struct {
-	Info DeviceInfo
-	//IP    string
+	Info  DeviceInfo
 	State int
 }
 

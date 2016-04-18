@@ -4,42 +4,43 @@
 <!--[if IE 8]> <html class="no-js lt-ie9"> <![endif]-->
 <!--[if gt IE 8]><!-->
 <html class="no-js">
-  <!--<![endif]-->
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <base href="/">
-    <title>Apsaras</title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width">
-    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-    <!-- build:css(static) app/vendor.css -->
-    <!-- bower:css -->
-    <link rel="stylesheet" href="static/bower_components/bootstrap/dist/css/bootstrap.css"/>
-    <link rel="stylesheet" href="static/bower_components/bootstrap-social/bootstrap-social.css"/>
-    <link rel="stylesheet" href="static/bower_components/font-awesome/css/font-awesome.min.css">
-    <!-- endbower -->
-    <!-- endbuild -->
-    <!-- build:css({.tmp,client}) app/app.css -->
-    <!-- injector:css -->
-    <link rel="stylesheet" href="static/app/app.css">
-    <link rel="stylesheet" href="static/app/submit/submit.css">
-    <link rel="stylesheet" href="static/app/table/table.css">
+    <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <base href="/">
+        <title>Apsaras</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+        <!-- build:css(static) app/vendor.css -->
+        <!-- bower:css -->
+        <link rel="stylesheet" href="static/bower_components/bootstrap/dist/css/bootstrap.css"/>
+        <link rel="stylesheet" href="static/bower_components/bootstrap-social/bootstrap-social.css"/>
+        <link rel="stylesheet" href="static/bower_components/font-awesome/css/font-awesome.min.css">
+        <!-- endbower -->
+        <!-- endbuild -->
+        <!-- build:css({.tmp,client}) app/app.css -->
+        <!-- injector:css -->
+        <link rel="stylesheet" href="static/app/app.css">
+        <link rel="stylesheet" href="static/app/submit/submit.css">
+        <link rel="stylesheet" href="static/app/table/table.css">
+        <link rel="stylesheet" href="static/app/slave/slave.css">
 
-    <link rel="stylesheet" href="static/app/main/animate.min.css">
-    <link rel="stylesheet" href="static/app/main/layout.css">
-    <link rel="stylesheet" href="static/app/main/style.min.css">
-    <!-- endinjector -->
-    <!-- endbuild -->
-  </head>
-  <body ng-app="aptWebApp">
-    <!--[if lt IE 7]> <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p> <![endif]-->
+        <link rel="stylesheet" href="static/app/main/animate.min.css">
+        <link rel="stylesheet" href="static/app/main/layout.css">
+        <link rel="stylesheet" href="static/app/main/style.min.css">
+        <!-- endinjector -->
+        <!-- endbuild -->
+    </head>
+    <body ng-app="aptWebApp">
+        <!--[if lt IE 7]> <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p> <![endif]-->
 
-    <!-- Add your site or application content here -->
-    <div ui-view=""></div>
+        <!-- Add your site or application content here -->
+        <div ui-view=""></div>
 
-    <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
-    <!-- <script>
+        <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
+        <!-- <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
       m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -49,34 +50,36 @@
       ga('send', 'pageview');
     </script> -->
 
-    <!--[if lt IE 9]> <script src="bower_components/es5-shim/es5-shim.js"></script> <script src="bower_components/json3/lib/json3.min.js"></script> <![endif]-->
-    <!-- build:js({static,node_modules}) app/vendor.js -->
-    <!-- bower:js -->
-    <script src="static/bower_components/jquery/dist/jquery.js"></script>
-    <script src="static/bower_components/angular/angular.js"></script>
-    <script src="static/bower_components/bootstrap/dist/js/bootstrap.js"></script>
-    <script src="static/bower_components/angular-resource/angular-resource.js"></script>
-    <script src="static/bower_components/angular-cookies/angular-cookies.js"></script>
-    <script src="static/bower_components/angular-sanitize/angular-sanitize.js"></script>
-    <script src="static/bower_components/lodash/dist/lodash.compat.js"></script>
-    <script src="static/bower_components/angular-ui-router/release/angular-ui-router.js"></script>
-    <script src="static/bower_components/angular-validation-match/dist/angular-validation-match.min.js"></script>
-    <script src="static/bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
-    <script src="static/bower_components/ng-file-upload/ng-file-upload.js"></script>
-    <script src="static/bower_components/angular-animate/angular-animate.js"></script>
-    <!-- endbower -->
-    <!-- some useful js -->
-    <!-- endbuild -->
-    <!-- build:js(.tmp) app/app.js -->
-    <script src="static/app/app.js"></script>
-    <!-- injector:js -->
-    <script src="static/app/main/sher.js"></script>
-    <script src="static/app/main/main.js"></script>
-    <script src="static/app/table/table.js"></script>
-    <script src="static/app/submit/submit.controller.js"></script>
-    <script src="static/app/submit/submit.js"></script>
-    <script src="static/app/table/table.controller.js"></script>
-    <!-- endinjector -->
-    <!-- endbuild -->
-  </body>
+        <!--[if lt IE 9]> <script src="bower_components/es5-shim/es5-shim.js"></script> <script src="bower_components/json3/lib/json3.min.js"></script> <![endif]-->
+        <!-- build:js({static,node_modules}) app/vendor.js -->
+        <!-- bower:js -->
+        <script src="static/bower_components/jquery/dist/jquery.js"></script>
+        <script src="static/bower_components/angular/angular.js"></script>
+        <script src="static/bower_components/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="static/bower_components/angular-resource/angular-resource.js"></script>
+        <script src="static/bower_components/angular-cookies/angular-cookies.js"></script>
+        <script src="static/bower_components/angular-sanitize/angular-sanitize.js"></script>
+        <script src="static/bower_components/lodash/dist/lodash.compat.js"></script>
+        <script src="static/bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+        <script src="static/bower_components/angular-validation-match/dist/angular-validation-match.min.js"></script>
+        <script src="static/bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+        <script src="static/bower_components/ng-file-upload/ng-file-upload.js"></script>
+        <script src="static/bower_components/angular-animate/angular-animate.js"></script>
+        <!-- endbower -->
+        <!-- some useful js -->
+        <!-- endbuild -->
+        <!-- build:js(.tmp) app/app.js -->
+        <script src="static/app/app.js"></script>
+        <!-- injector:js -->
+        <script src="static/app/main/sher.js"></script>
+        <script src="static/app/main/main.js"></script>
+        <script src="static/app/submit/submit.controller.js"></script>
+        <script src="static/app/submit/submit.js"></script>
+        <script src="static/app/table/table.js"></script>
+        <script src="static/app/table/table.controller.js"></script>
+        <script src="static/app/slave/slave.js"></script>
+        <script src="static/app/slave/slave.controller.js"></script>
+        <!-- endinjector -->
+        <!-- endbuild -->
+    </body>
 </html>

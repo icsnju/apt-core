@@ -5,7 +5,7 @@ angular.module('aptWebApp')
     $stateProvider
       .state('main.jobs', {
         url: '/jobs',
-        templateUrl: 'static/app/table/jobs.html',
+        templateUrl: 'static/app/table/job.html',
         controller: 'JobCtrl'
       })
       .state('main.jobDetail', {

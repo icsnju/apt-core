@@ -5,7 +5,3 @@ type SlaveInfo struct {
 	DeviceStates map[string]Device
 	TaskStates   map[string]Task
 }
-
-type SlaveMap struct {
-	Map map[string]SlaveInfo
-}

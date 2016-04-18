@@ -174,9 +174,13 @@ angular.module('aptWebApp')
                     state: 3
                 };
             } else if (key == 'run') {
-                statusKey = function(task) {
-                    return task.state == 0 || task.state == 1;
-                }
+                statusKey = {
+                    state: 1
+                };
+            } else if (key == 'wait') {
+                statusKey = {
+                    state: 0
+                };
             } else {
                 statusKey = {};
             }
@@ -186,7 +190,9 @@ angular.module('aptWebApp')
 
         //get status of the task
         $scope.getStatus = function(status) {
-            if (status == 0 || status == 1) {
+            if (status == 0) {
+                return 'waiting';
+            } else if (status == 1) {
                 return 'running';
             } else if (status == 2) {
                 return 'finished';
@@ -201,8 +207,10 @@ angular.module('aptWebApp')
                 return 'danger';
             } else if (status == 2) {
                 return 'success';
-            } else {
+            } else if (status == 1) {
                 return 'info';
+            } else {
+                return 'wait';
             }
         }
 

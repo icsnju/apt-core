@@ -1,0 +1,50 @@
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-sm-12 animated fadeInRight">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h2>
+                        Nodes | ({{nodes.length}})
+                    </h2>
+                </div>
+                <div class="ibox-content mailbox-main">
+                    <div class="clearfix table-tools">
+                        <div class="pull-right" id="input-btn">
+                            <div class="input-group mail-search">
+                                <input type="text" class="form-control input-sm" ng-model="searchKey" placeholder="Search all nodes...">
+                            </div>
+
+                            <div class="keep-open btn-group">
+                                <button type="button" id="status-btn" class="btn btn-default" title="refresh" ng-click="refresh()">
+                                    <i class="glyphicon glyphicon-refresh icon-refresh"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-striped tasks">
+                            <thead>
+                                <tr>
+                                    <th>IP</th>
+                                    <th>Devices</th>
+                                    <th>Tasks</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="node in nodes | filter:searchKey">
+                                    <td>
+                                        <a ui-sref="main.slaveDetail({id:node.IP})">{{node.IP}}</a>
+                                    </td>
+                                    <td>{{node.DevNum}}</td>
+                                    <td>{{node.TaskNum}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

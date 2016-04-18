@@ -1,0 +1,102 @@
+<div class="animated fadeInRight">
+    <div id="backTask">
+        <a id="backUrl" ui-sref="main.slaves">
+            <i class="glyphicon glyphicon-arrow-left"></i>Slaves
+        </a>
+    </div>
+
+    <div class="wrapper wrapper-content">
+        <div class="ibox-title">
+            <h2>
+                Devices | ({{devices.length}}) |
+                {{ip}}
+            </h2>
+        </div>
+        <div class="ibox-content mailbox-main">
+            <div class="clearfix table-tools">
+                <div class="pull-right" id="input-btn">
+                    <div class="input-group mail-search">
+                        <input type="text" class="form-control input-sm" ng-model="searchDevKey" placeholder="Search all devices...">
+                    </div>
+
+                    <div class="keep-open btn-group">
+                        <button type="button" id="status-btn" class="btn btn-default" title="refresh" ng-click="refresh()">
+                            <i class="glyphicon glyphicon-refresh icon-refresh"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-striped tasks">
+                    <thead>
+                        <tr>
+                            <th>Device ID</th>
+                            <th>Manufacturers</th>
+                            <th>Model</th>
+                            <th>BuildVersion</th>
+                            <th>API</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="read" ng-repeat="device in devices | filter:searchDevKey">
+                            <td>{{device.Info.Id}}</td>
+                            <td>{{device.Info.Manu}}</td>
+                            <td>{{device.Info.Model}}</td>
+                            <td>{{device.Info.Api}}</td>
+                            <td>{{device.Info.BuildVersion}}</td>
+                            <td>{{device.State}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="wrapper wrapper-content">
+        <div class="ibox-title">
+            <h2>
+                Tasks | ({{tasks.length}}) |
+                {{ip}}
+            </h2>
+        </div>
+        <div class="ibox-content mailbox-main">
+            <div class="clearfix table-tools">
+                <div class="pull-right" id="input-btn">
+                    <div class="input-group mail-search">
+                        <input type="text" class="form-control input-sm" ng-model="searchTaskKey" placeholder="Search all tasks...">
+                    </div>
+
+                    <div class="keep-open btn-group">
+                        <button type="button" id="status-btn" class="btn btn-default" title="refresh" ng-click="refresh()">
+                            <i class="glyphicon glyphicon-refresh icon-refresh"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-striped tasks">
+                    <thead>
+                        <tr>
+                            <th>Device ID</th>
+                            <th>Job ID</th>
+                            <th>Start Time</th>
+                            <th>Finish Time</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="read" ng-repeat="task in tasks | filter:searchTaskKey">
+                            <td>{{task.DeviceId}}</td>
+                            <td>{{task.JobId}}</td>
+                            <td>{{task.StartTime}}</td>
+                            <td>{{task.FinishTime}}</td>
+                            <td>{{task.State}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
