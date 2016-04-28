@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"log"
+	"path"
 )
 
 type SlaConf struct {
@@ -37,4 +38,8 @@ func getServerIP() string {
 
 func getAndroidSDKPath() string {
 	return configuration.SDKPath
+}
+
+func getADBPath() string {
+	return path.Join(configuration.SDKPath, "platform-tools/adb")
 }

@@ -39,8 +39,10 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="read" ng-repeat="device in devices | filter:searchDevKey">
-                            <td>{{device.Info.Id}}</td>
+                        <tr ng-repeat="device in devices | filter:searchDevKey">
+                            <td>
+                                <a ui-sref="main.deviceDetail({id:device.Info.Id,ip:ip})">{{device.Info.Id}}</a>
+                            </td>
                             <td>{{device.Info.Manu}}</td>
                             <td>{{device.Info.Model}}</td>
                             <td>{{device.Info.Api}}</td>
@@ -57,7 +59,7 @@
         <div class="ibox-title">
             <h2>
                 Tasks | ({{tasks.length}}) |
-                {{ip}}
+                {{ip.id}}
             </h2>
         </div>
         <div class="ibox-content mailbox-main">
@@ -86,7 +88,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="read" ng-repeat="task in tasks | filter:searchTaskKey">
+                        <tr ng-repeat="task in tasks | filter:searchTaskKey">
                             <td>{{task.DeviceId}}</td>
                             <td>{{task.JobId}}</td>
                             <td>{{task.StartTime}}</td>

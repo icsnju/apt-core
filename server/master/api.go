@@ -16,6 +16,11 @@ func GetDevices() []comp.DeviceInfo {
 	return devices
 }
 
+//get a device in a node
+func GetDevice(ip, id string) (comp.Device, error) {
+	return slaveManager.getDevice(ip, id)
+}
+
 //Create a new job
 func CreateJob(subjob models.SubJob) models.Job {
 

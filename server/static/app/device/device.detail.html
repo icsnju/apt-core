@@ -1,0 +1,36 @@
+<div class="animated fadeInRight">
+    <div id="backTask">
+        <a id="backUrl" ui-sref="main.slaveDetail({id:nodeIP})">
+            <i class="glyphicon glyphicon-arrow-left"></i>Node
+        </a>
+    </div>
+    <div class="row">
+        <div class="col-md-3 col-md-offset-2 col-sm-12 padContent">
+            <div class="detailContent animated fadeInRight">
+                <canvas class="screen-canvas" draw-screen></canvas>
+            </div>
+        </div>
+        <div class="col-md-5 col-sm-12 padContent">
+            <div class="detailContent animated fadeInRight">
+                <ul class="detail">
+                    <dl class="task-dl dl-horizontal">
+                        <dt>Device ID:</dt>
+                        <dd>{{device.Info.Id}}</dd>
+                        <dt>Manufacturers:</dt>
+                        <dd>{{device.Info.Manu}}</dd>
+                        <dt>Model:</dt>
+                        <dd>{{device.Info.Model}}</dd>
+                        <dt>API:</dt>
+                        <dd>{{device.Info.Api}}</dd>
+                        <dt>Build Version:</dt>
+                        <dd>{{device.Info.BuildVersion}}</dd>
+                        <dt>CPU Abi:</dt>
+                        <dd>{{device.Info.CpuAbi}}</dd>
+                        <dt>Status:</dt>
+                        <dd>{{device.State}}</dd>
+                    </dl>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

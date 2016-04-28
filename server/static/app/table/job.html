@@ -59,7 +59,7 @@
                                     <th>ID</th>
                                     <th>Start Time</th>
                                     <th>Framework</th>
-                                    <th>Filter</th>
+                                    <th>Devices</th>
                                     <th>Status</th>
                                     <th>Options</th>
                                 </tr>
@@ -71,7 +71,7 @@
                                     </td>
                                     <td>{{job.starttime}}</td>
                                     <td>{{job.framekind}}</td>
-                                    <td>{{job.filterkind}}</td>
+                                    <td>{{job.devices}}</td>
                                     <td>
                                         <div class="job-bar progress progress-striped" title={{getPercent(job.status)}}>
                                             <div class="progress-bar progress-bar-{{getProColor(job.status)}}" aria-valuemin="0" aria-valuemax="100" style="width: {{getPercent(job.status)}};"></div>

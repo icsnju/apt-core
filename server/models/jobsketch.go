@@ -7,11 +7,11 @@ import (
 )
 
 type JobSketch struct {
-	JobId      string
-	StartTime  string
-	FrameKind  string
-	FilterKind string
-	Status     int
+	JobId     string
+	StartTime string
+	FrameKind string
+	Devices   int
+	Status    int
 }
 
 func SaveJobSketchInDB(job JobSketch) error {

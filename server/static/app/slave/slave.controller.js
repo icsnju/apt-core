@@ -24,7 +24,7 @@ angular.module('aptWebApp')
 
         var id = $stateParams.id;
         $scope.ip=id;
-        console.log(JSON.stringify($stateParams));
+        //console.log(JSON.stringify($stateParams));
 
         $scope.refresh = function() {
             $http.get('slave/' + id).then(response => {

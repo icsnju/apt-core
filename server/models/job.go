@@ -34,7 +34,7 @@ func (job Job) ToSketch() JobSketch {
 	jbr.JobId = job.JobId
 	jbr.StartTime = job.StartTime.Format("2006-01-02 15:04:05")
 	jbr.FrameKind = job.JobInfo.FrameKind
-	jbr.FilterKind = job.JobInfo.FilterKind
+	jbr.Devices = len(job.TaskMap)
 	jbr.Status = 0
 	return jbr
 }

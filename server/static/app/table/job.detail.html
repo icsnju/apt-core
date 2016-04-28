@@ -89,7 +89,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="read" ng-repeat="task in tasks | filter:searchKey | filter:statusKey">
+                        <tr ng-repeat="task in tasks | filter:searchKey | filter:statusKey">
                             <td>{{task.deviceid}}</td>
                             <td>{{task.starttime}}</td>
                             <td>{{task.finishtime}}</td>

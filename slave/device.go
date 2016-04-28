@@ -69,10 +69,21 @@ func (m *DeviceManager) updateDevInfo() {
 	}
 
 	m.deviceLock.Lock()
-	for id, dev := range m.deviceMap {
-		_, ok := newMap[id]
+	for id, _ := range newMap {
+		dev, ok := m.deviceMap[id]
+		//old device
 		if ok {
 			newMap[id] = dev
+		} else {
+			//new device
+			go startMinicap(id)
+		}
+	}
+	for id, _ := range m.deviceMap {
+		_, ok := newMap[id]
+		if !ok {
+			//miss device
+			stopMinicap(id)
 		}
 	}
 	m.deviceMap = newMap

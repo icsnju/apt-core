@@ -12,6 +12,7 @@ func main() {
 	framework.RigisterGob()
 
 	go deviceManager.loopUpdate()
+	go startWebSocket()
 	//start connet to master
 	diaMaster(getServerIP())
 	log.Println("Slave Over!")

@@ -3,6 +3,7 @@ package master
 import (
 	"apsaras/comm/comp"
 	"apsaras/server/models"
+	"errors"
 	"sync"
 )
 
@@ -23,6 +24,20 @@ func (m *SlaveManager) getDevices() []comp.Device {
 	}
 	m.slavesLock.Unlock()
 	return devList
+}
+
+func (m *SlaveManager) getDevice(ip, id string) (comp.Device, error) {
+	var device comp.Device
+	m.slavesLock.Lock()
+	defer m.slavesLock.Unlock()
+	slave, ex := m.slavesMap[ip]
+	if ex {
+		dev, ex2 := slave.DeviceStates[id]
+		if ex2 {
+			return dev, nil
+		}
+	}
+	return device, errors.New("Device not exist!")
 }
 
 func (m *SlaveManager) updateSlave(s comp.SlaveInfo) {
