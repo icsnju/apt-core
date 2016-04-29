@@ -21,12 +21,14 @@ fi
 args=
 if [ "$1" = "autosize" ]; then
   set +o pipefail
-  size=$(adb -s $id shell dumpsys window | grep -Eo 'init=\d+x\d+' | head -1 | cut -d= -f 2)
-  w=0
-  h=0
+  #size=$(adb -s $id shell dumpsys window | grep -Eo 'init=\d+x\d+' | head -1 | cut -d= -f 2)
+  size=$(adb -s $id shell dumpsys window | grep 'init' | cut -d= -f 2 | cut -d' ' -f 1)
+
   if [ "$size" = "" ]; then
-    w=$(adb -s $id shell dumpsys window | grep -Eo 'DisplayWidth=\d+' | head -1 | cut -d= -f 2)
-    h=$(adb -s $id shell dumpsys window | grep -Eo 'DisplayHeight=\d+' | head -1 | cut -d= -f 2)
+    #w=$(adb -s $id shell dumpsys window | grep -Eo 'DisplayWidth=\d+' | head -1 | cut -d= -f 2)
+	w=$(adb -s $id shell dumpsys display | grep mBaseDisplayInfo | cut -d, -f 2 | cut -d' ' -f 3)
+    #h=$(adb -s $id shell dumpsys window | grep -Eo 'DisplayHeight=\d+' | head -1 | cut -d= -f 2)
+	h=$(adb -s $id shell dumpsys display | grep mBaseDisplayInfo | cut -d, -f 2 | cut -d' ' -f 5)
     size="${w}x${h}"
   fi
 #  zoom=$size

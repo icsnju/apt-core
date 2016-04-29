@@ -121,6 +121,7 @@ func startMinicap(id string) {
 func runMCinDevice(id string) {
 	out := comm.ExeCmd("./minicap.sh autosize " + id)
 	log.Println("minicap: ", out)
+	portManager.freePort(id)
 }
 
 //regist the device in server
