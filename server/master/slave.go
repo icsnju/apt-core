@@ -26,18 +26,18 @@ func (m *SlaveManager) getDevices() []comp.Device {
 	return devList
 }
 
-func (m *SlaveManager) getDevice(ip, id string) (comp.Device, error) {
+func (m *SlaveManager) getDevice(id string) (comp.Device, string, error) {
 	var device comp.Device
+	var ip string
 	m.slavesLock.Lock()
 	defer m.slavesLock.Unlock()
-	slave, ex := m.slavesMap[ip]
-	if ex {
-		dev, ex2 := slave.DeviceStates[id]
-		if ex2 {
-			return dev, nil
+	for ip, info := range m.slavesMap {
+		dev, ex := info.DeviceStates[id]
+		if ex {
+			return dev, ip, nil
 		}
 	}
-	return device, errors.New("Device not exist!")
+	return device, ip, errors.New("Device not exist!")
 }
 
 func (m *SlaveManager) updateSlave(s comp.SlaveInfo) {

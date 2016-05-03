@@ -20,7 +20,8 @@ func startServer() {
 	beego.Router("/download/task", &controllers.JobController{}, "get:GetTaskResult")
 	beego.Router("/download/job", &controllers.JobController{}, "get:GetJobResult")
 	beego.Router("/device", &controllers.DeviceController{}, "get:ListDevices")
-	beego.Router("/device/:ip/:id", &controllers.DeviceController{}, "get:GetDevice")
+	beego.Router("/device/:id", &controllers.DeviceController{}, "get:GetDevice")
+	beego.Router("/device/ip/:id", &controllers.DeviceController{}, "get:GetDeviceIP")
 	beego.Router("/slave", &controllers.SlaveController{}, "get:ListSlaves")
 	beego.Router("/slave/:id", &controllers.SlaveController{}, "get:GetSlave")
 	//html

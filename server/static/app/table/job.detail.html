@@ -90,7 +90,9 @@
                     </thead>
                     <tbody>
                         <tr ng-repeat="task in tasks | filter:searchKey | filter:statusKey">
-                            <td>{{task.deviceid}}</td>
+                            <td>
+                                <a ui-sref="main.deviceDetail({id:task.deviceid})">{{task.deviceid}}</a>
+                            </td>
                             <td>{{task.starttime}}</td>
                             <td>{{task.finishtime}}</td>
                             <td>

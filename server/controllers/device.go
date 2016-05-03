@@ -17,9 +17,8 @@ func (this *DeviceController) ListDevices() {
 }
 
 func (this *DeviceController) GetDevice() {
-	ip := this.Ctx.Input.Param(":ip")
 	id := this.Ctx.Input.Param(":id")
-	device, err := master.GetDevice(ip, id)
+	device, _, err := master.GetDevice(id)
 	if err != nil {
 		this.Ctx.Output.SetStatus(404)
 		this.Ctx.Output.Body([]byte("Device not found"))
@@ -27,4 +26,15 @@ func (this *DeviceController) GetDevice() {
 	}
 	this.Data["json"] = device
 	this.ServeJSON()
+}
+
+func (this *DeviceController) GetDeviceIP() {
+	id := this.Ctx.Input.Param(":id")
+	_, ip, err := master.GetDevice(id)
+	if err != nil {
+		this.Ctx.Output.SetStatus(404)
+		this.Ctx.Output.Body([]byte("Device not found"))
+		return
+	}
+	this.Ctx.Output.Body([]byte(ip))
 }

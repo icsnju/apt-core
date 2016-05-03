@@ -17,8 +17,8 @@ func GetDevices() []comp.DeviceInfo {
 }
 
 //get a device in a node
-func GetDevice(ip, id string) (comp.Device, error) {
-	return slaveManager.getDevice(ip, id)
+func GetDevice(id string) (comp.Device, string, error) {
+	return slaveManager.getDevice(id)
 }
 
 //Create a new job

@@ -41,7 +41,7 @@
                     <tbody>
                         <tr ng-repeat="device in devices | filter:searchDevKey">
                             <td>
-                                <a ui-sref="main.deviceDetail({id:device.Info.Id,ip:ip})">{{device.Info.Id}}</a>
+                                <a ui-sref="main.deviceDetail({id:device.Info.Id})">{{device.Info.Id}}</a>
                             </td>
                             <td>{{device.Info.Manu}}</td>
                             <td>{{device.Info.Model}}</td>
