@@ -35,6 +35,18 @@ func ExeCmd(cmd string) string {
 	return string(out)
 }
 
+//Execute cmdline
+func CreateCmd(cmd string) *exec.Cmd {
+	log.Println("command is ", cmd)
+	// splitting head => g++ parts => rest of the command
+	parts := strings.Fields(cmd)
+	head := parts[0]
+	parts = parts[1:len(parts)]
+
+	command := exec.Command(head, parts...)
+	return command
+}
+
 // exists returns whether the given file or directory exists or not
 func FileExists(path string) (bool, error) {
 	_, err := os.Stat(path)

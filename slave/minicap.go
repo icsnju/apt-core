@@ -4,9 +4,11 @@ import (
 	"apsaras/comm"
 	"bufio"
 	"bytes"
+	"errors"
 	"log"
 	"net"
 	"net/http"
+	"os/exec"
 	"strconv"
 	"strings"
 	"sync"
@@ -85,11 +87,12 @@ func (this *MiniPortManager) freePort(id string) {
 
 //start http server when the slave start
 func startWebSocket() {
-	http.Handle("/", http.FileServer(http.Dir(".")))
+	//http.Handle("/", http.FileServer(http.Dir(".")))
 	if err := http.ListenAndServe(WS_PORT, nil); err != nil {
 		log.Println("ListenAndServe:", err)
 		return
 	}
+	//http.Handle("/*", websocket.Handler(clientHandler))
 }
 
 //when a device is miss
@@ -111,7 +114,7 @@ func startMinicap(id, resolution string) {
 		portManager.freePort(id)
 		return
 	}
-	log.Println("Start minicap on", port, " for ", id)
+	//log.Println("Start minicap on", port, " for ", id)
 	//regist this device in websocket server
 	registDeviceInWS(id)
 	//run minicap in the device
@@ -119,22 +122,42 @@ func startMinicap(id, resolution string) {
 }
 
 //run minicap in device
-func runMCinDevice(id, resolution string) {
-	defer portManager.freePort(id)
-
+func runMCinDeviceCmd(id, resolution string) (*exec.Cmd, error) {
+	//defer portManager.freePort(id)
+	var command *exec.Cmd
+	var err error
 	wh := strings.Split(resolution, "x")
 	if len(wh) != 2 {
-		log.Println("resolution err: ", resolution)
+		return command, errors.New("resolution err")
+	}
+	w, err := strconv.Atoi(wh[0])
+	if err != nil {
+		return command, errors.New("resolution err")
+	}
+	h, err := strconv.Atoi(wh[1])
+	if err != nil {
+		return command, errors.New("resolution err")
+	}
+
+	sw := w * SCREEN_SIZE / h
+	args := resolution + "@" + strconv.Itoa(sw) + "x" + strconv.Itoa(SCREEN_SIZE) + "/0"
+	cmd := comm.CreateCmd("./minicap.sh " + args + " " + id)
+	return cmd, nil
+}
+
+//run minicap in device
+func runMCinDevice(id, resolution string) {
+	//defer portManager.freePort(id)
+	wh := strings.Split(resolution, "x")
+	if len(wh) != 2 {
 		return
 	}
 	w, err := strconv.Atoi(wh[0])
 	if err != nil {
-		log.Println("resolution w: ", wh[0])
 		return
 	}
 	h, err := strconv.Atoi(wh[1])
 	if err != nil {
-		log.Println("resolution h: ", wh[1])
 		return
 	}
 
@@ -142,6 +165,7 @@ func runMCinDevice(id, resolution string) {
 	args := resolution + "@" + strconv.Itoa(sw) + "x" + strconv.Itoa(SCREEN_SIZE) + "/0"
 	out := comm.ExeCmd("./minicap.sh " + args + " " + id)
 	log.Println("minicap: ", out)
+	portManager.freePort(id)
 }
 
 //regist the device in server
@@ -172,6 +196,16 @@ func clientHandler(ws *websocket.Conn) {
 		log.Println("Minicap cannot run in this device", id)
 		return
 	}
+
+	//	cmd, err := runMCinDeviceCmd(id, dev.Info.Resolution)
+	//	if err != nil {
+	//		log.Println("Minicap cmd create err", err)
+	//		return
+	//	}
+	//	cmd.Start()
+	//	defer cmd.Process.Kill()
+	//	time.Sleep(time.Second)
+
 	ps := strconv.Itoa(port)
 	//connect to device
 	tcpAddr, err := net.ResolveTCPAddr("tcp", "localhost:"+ps)
@@ -179,19 +213,26 @@ func clientHandler(ws *websocket.Conn) {
 		log.Println(err)
 		return
 	}
-	conn, err := net.DialTCP("tcp", nil, tcpAddr)
+	conn, err := net.DialTCP("tcp4", nil, tcpAddr)
 	if err != nil {
 		log.Println(err)
 		return
 	}
 
-	defer conn.Close()
+	defer func() {
+		err = conn.Close()
+		if err != nil {
+			log.Println("conn close err", err)
+		}
+	}()
+
 	reader := bufio.NewReader(conn)
+	go sendImage(ws, reader)
 
-	go getEvent(ws, id, dev.Info.Resolution)
+	getEvent(ws, id, dev.Info.Resolution)
 	//start send bytes to websocket
-	sendImage(ws, reader)
-
+	//conn.CloseRead()
+	//conn.CloseWrite()
 }
 
 //get UI event from client

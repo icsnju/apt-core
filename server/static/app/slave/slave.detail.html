@@ -35,6 +35,8 @@
                             <th>Model</th>
                             <th>BuildVersion</th>
                             <th>API</th>
+                            <th>CPU Abi</th>
+                            <th>Resolution</th>
                             <th>Status</th>
                         </tr>
                     </thead>
@@ -47,7 +49,9 @@
                             <td>{{device.Info.Model}}</td>
                             <td>{{device.Info.Api}}</td>
                             <td>{{device.Info.BuildVersion}}</td>
-                            <td>{{device.State}}</td>
+                            <td>{{device.Info.CpuAbi}}</td>
+                            <td>{{device.Info.Resolution}}</td>
+                            <td>{{getDevStatus(device.State)}}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -93,11 +97,21 @@
                             <td>{{task.JobId}}</td>
                             <td>{{task.StartTime}}</td>
                             <td>{{task.FinishTime}}</td>
-                            <td>{{task.State}}</td>
+                            <td>
+                                <a>
+                                    <i class="fa fa-circle status-{{getPoColor(task.State)}}" title={{getTaskStatus(task.State)}}></i>
+                                </a>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
+        </div>
+    </div>
+
+    <div class="wrapper wrapper-content">
+        <div class="col-md-3 col-sm-12" ng-repeat="device in devices">
+            <canvas class="screen-canvas" draw-screen devid="{{device.Info.Id}}"></canvas>
         </div>
     </div>
 

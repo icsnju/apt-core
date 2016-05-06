@@ -47,7 +47,7 @@ func diaMaster(serverIP string) {
 		//record all task state
 		beat.TaskStates = taskManager.getTaskInfo()
 
-		log.Println(beat.IP, " send beat to master!")
+		log.Println(beat.IP, "send beat to master!")
 		//send beat
 		err = encoder.Encode(&beat)
 		if err != nil {

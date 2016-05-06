@@ -22,6 +22,8 @@
                 <th>Model</th>
                 <th>BuildVersion</th>
                 <th>API</th>
+                <th>CPU Abi</th>
+                <th>Resolution</th>
                 <th><input type="checkbox" ng-model="select.checkAll" ng-click="clickTopBox()"></th>
             </tr>
         </thead>
@@ -32,6 +34,8 @@
                 <td>{{device.Model}}</td>
                 <td>{{device.BuildVersion}}</td>
                 <td>{{device.Api}}</td>
+                <td>{{device.CpuAbi}}</td>
+                <td>{{device.Resolution}}</td>
                 <td><input type="checkbox" ng-model="device.check"></td>
             </tr>
         </tbody>

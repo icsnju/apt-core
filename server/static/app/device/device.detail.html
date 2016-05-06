@@ -7,7 +7,7 @@
     <div class="row" padContent>
         <div class="col-md-3 col-md-offset-2 col-sm-12">
             <div class="detailContent animated fadeInRight">
-                <canvas class="screen-canvas" draw-screen></canvas>
+                <canvas class="screen-canvas" draw-screen devid="{{deviceID}}"></canvas>
             </div>
         </div>
         <div class="col-md-5 col-sm-12">
@@ -26,8 +26,10 @@
                         <dd>{{device.Info.BuildVersion}}</dd>
                         <dt>CPU Abi:</dt>
                         <dd>{{device.Info.CpuAbi}}</dd>
+                        <dt>Resolution:</dt>
+                        <dd>{{device.Info.Resolution}}</dd>
                         <dt>Status:</dt>
-                        <dd>{{device.State}}</dd>
+                        <dd>{{getState(device.State)}}</dd>
                     </dl>
                 </ul>
             </div>
