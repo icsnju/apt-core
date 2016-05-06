@@ -5,6 +5,7 @@ import (
 	"apsaras/comm/comp"
 	"apsaras/comm/framework"
 	"encoding/json"
+	"errors"
 	"io/ioutil"
 	"log"
 	"path"
@@ -61,7 +62,6 @@ func (m *DeviceManager) updateDevInfo() {
 	newMap := make(map[string]comp.Device)
 	for _, dvinfo := range dvinfos.DeviceInfos {
 		var dev comp.Device
-		//dev.IP = mIP
 		dev.State = comp.DEVICE_FREE
 		dev.Info = dvinfo
 		newMap[dvinfo.Id] = dev
@@ -69,14 +69,14 @@ func (m *DeviceManager) updateDevInfo() {
 	}
 
 	m.deviceLock.Lock()
-	for id, _ := range newMap {
+	for id, ndev := range newMap {
 		dev, ok := m.deviceMap[id]
 		//old device
 		if ok {
 			newMap[id] = dev
 		} else {
 			//new device
-			go startMinicap(id)
+			go startMinicap(id, ndev.Info.Resolution)
 		}
 	}
 	for id, _ := range m.deviceMap {
@@ -98,6 +98,19 @@ func (m *DeviceManager) getDeviceInfo() map[string]comp.Device {
 	}
 	m.deviceLock.Unlock()
 	return devices
+}
+
+func (m *DeviceManager) getDevice(id string) (comp.Device, error) {
+	var device comp.Device
+	err := errors.New("Device not exist!")
+	m.deviceLock.Lock()
+	defer m.deviceLock.Unlock()
+
+	dev, ex := m.deviceMap[id]
+	if ex {
+		return dev, nil
+	}
+	return device, err
 }
 
 func (m *DeviceManager) giveDevice(id string) bool {

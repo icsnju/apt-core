@@ -87,7 +87,7 @@ func (m *JobManager) updateJobs(taskinfo map[string]comp.Task) {
 		did := t.DeviceId
 		job, ex := m.jobMap[jid]
 		if !ex {
-			log.Println("Job not exist! ", jid)
+			//log.Println("Job not exist! ", jid)
 			continue
 		}
 		_, ex = job.TaskMap[did]

@@ -33,6 +33,7 @@ const WS_PORT = ":9002"
 const PORT_START = 1711
 const PORT_END = 1720
 const PORT_FREE = "free"
+const SCREEN_SIZE = 500
 
 type MiniPortManager struct {
 	portMap map[int]string
@@ -97,7 +98,7 @@ func stopMinicap(id string) {
 }
 
 //when a new device is connected
-func startMinicap(id string) {
+func startMinicap(id, resolution string) {
 	port := portManager.allocatePort(id)
 	if port == -1 {
 		log.Println("Port is not enough for", id)
@@ -114,14 +115,33 @@ func startMinicap(id string) {
 	//regist this device in websocket server
 	registDeviceInWS(id)
 	//run minicap in the device
-	runMCinDevice(id)
+	runMCinDevice(id, resolution)
 }
 
 //run minicap in device
-func runMCinDevice(id string) {
-	out := comm.ExeCmd("./minicap.sh autosize " + id)
+func runMCinDevice(id, resolution string) {
+	defer portManager.freePort(id)
+
+	wh := strings.Split(resolution, "x")
+	if len(wh) != 2 {
+		log.Println("resolution err: ", resolution)
+		return
+	}
+	w, err := strconv.Atoi(wh[0])
+	if err != nil {
+		log.Println("resolution w: ", wh[0])
+		return
+	}
+	h, err := strconv.Atoi(wh[1])
+	if err != nil {
+		log.Println("resolution h: ", wh[1])
+		return
+	}
+
+	sw := w * SCREEN_SIZE / h
+	args := resolution + "@" + strconv.Itoa(sw) + "x" + strconv.Itoa(SCREEN_SIZE) + "/0"
+	out := comm.ExeCmd("./minicap.sh " + args + " " + id)
 	log.Println("minicap: ", out)
-	portManager.freePort(id)
 }
 
 //regist the device in server
@@ -142,9 +162,14 @@ func clientHandler(ws *websocket.Conn) {
 	id = strings.TrimPrefix(id, "/")
 	log.Println("new client connect to", id)
 
+	dev, err := deviceManager.getDevice(id)
+	if err != nil {
+		log.Println("This device is not connected", id)
+		return
+	}
 	port := portManager.getPort(id)
 	if port < 0 {
-		log.Println("Device is not connected", id)
+		log.Println("Minicap cannot run in this device", id)
 		return
 	}
 	ps := strconv.Itoa(port)
@@ -163,11 +188,76 @@ func clientHandler(ws *websocket.Conn) {
 	defer conn.Close()
 	reader := bufio.NewReader(conn)
 
+	go getEvent(ws, id, dev.Info.Resolution)
 	//start send bytes to websocket
 	sendImage(ws, reader)
 
 }
 
+//get UI event from client
+func getEvent(ws *websocket.Conn, id, resolution string) {
+	wh := strings.Split(resolution, "x")
+	if len(wh) != 2 {
+		log.Println("resolution err: ", resolution)
+		return
+	}
+
+	h, err := strconv.Atoi(wh[1])
+	if err != nil {
+		log.Println("resolution h: ", wh[1])
+		return
+	}
+
+	zoom := float64(h) / float64(SCREEN_SIZE)
+	for {
+		var evtString string
+		if err := websocket.Message.Receive(ws, &evtString); err != nil {
+			log.Println("Get event err", err)
+			break
+		}
+		xy := strings.Split(evtString, ",")
+		if len(xy) == 2 {
+			x, err := strconv.Atoi(xy[0])
+			if err != nil {
+				continue
+			}
+			y, err := strconv.Atoi(xy[1])
+			if err != nil {
+				continue
+			}
+			x = int(zoom * float64(x))
+			y = int(zoom * float64(y))
+			cmd := getADBPath() + " -s " + id + " shell input tap " + strconv.Itoa(x) + " " + strconv.Itoa(y)
+			comm.ExeCmd(cmd)
+		} else if len(xy) == 4 {
+			x1, err := strconv.Atoi(xy[0])
+			if err != nil {
+				continue
+			}
+			y1, err := strconv.Atoi(xy[1])
+			if err != nil {
+				continue
+			}
+			x2, err := strconv.Atoi(xy[2])
+			if err != nil {
+				continue
+			}
+			y2, err := strconv.Atoi(xy[3])
+			if err != nil {
+				continue
+			}
+			x1 = int(zoom * float64(x1))
+			y1 = int(zoom * float64(y1))
+			x2 = int(zoom * float64(x2))
+			y2 = int(zoom * float64(y2))
+			cmd := getADBPath() + " -s " + id + " shell input swipe " + strconv.Itoa(x1) + " " + strconv.Itoa(y1) + " " + strconv.Itoa(x2) + " " + strconv.Itoa(y2)
+			comm.ExeCmd(cmd)
+		}
+		log.Println("Get event", evtString)
+	}
+}
+
+//send images to client
 func sendImage(ws *websocket.Conn, reader *bufio.Reader) {
 	readBannerBytes := 0
 	bannerLength := 2

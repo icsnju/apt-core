@@ -38,6 +38,7 @@ type DeviceInfo struct {
 	Api          string
 	BuildVersion string
 	CpuAbi       string
+	Resolution   string
 }
 
 //device detail

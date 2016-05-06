@@ -19,30 +19,26 @@ else
 fi
 
 args=
-if [ "$1" = "autosize" ]; then
+if [ "$1" = "" ]; then
   set +o pipefail
   #size=$(adb -s $id shell dumpsys window | grep -Eo 'init=\d+x\d+' | head -1 | cut -d= -f 2)
-  size=$(adb -s $id shell dumpsys window | grep 'init' | cut -d= -f 2 | cut -d' ' -f 1)
-
+  size=$(adb -s $id shell dumpsys window | grep 'init' | cut -d= -f 2 | cut -d' ' -f 1 | head -1)
   if [ "$size" = "" ]; then
     #w=$(adb -s $id shell dumpsys window | grep -Eo 'DisplayWidth=\d+' | head -1 | cut -d= -f 2)
-	w=$(adb -s $id shell dumpsys display | grep mBaseDisplayInfo | cut -d, -f 2 | cut -d' ' -f 3)
+	w=$(adb -s $id shell dumpsys display | grep mBaseDisplayInfo | cut -d, -f 2 | cut -d' ' -f 3 | head -1)
     #h=$(adb -s $id shell dumpsys window | grep -Eo 'DisplayHeight=\d+' | head -1 | cut -d= -f 2)
-	h=$(adb -s $id shell dumpsys display | grep mBaseDisplayInfo | cut -d, -f 2 | cut -d' ' -f 5)
+	h=$(adb -s $id shell dumpsys display | grep mBaseDisplayInfo | cut -d, -f 2 | cut -d' ' -f 5 | head -1)
     size="${w}x${h}"
-  fi
-#  zoom=$size
-#  if [$h -gt $w];then
-#	w2=$((${w}/(${h}/400)))
-#	zoom="${w2}x400"
-#  else
-#	h2=$((${h}/(${w}/400)))
-#	zoom="400x${h2}"
-#  fi
-	
+	if [ "$w" = "" ]; then
+		size="1280x1920"
+	fi	
+  fi	
   args="-P $size@500x500/0"
+
   set -o pipefail
   shift
+else
+  args="-P $1"
 fi
 
 # Create a directory for our resources
