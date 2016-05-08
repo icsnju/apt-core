@@ -56,7 +56,8 @@ else
 fi
 
 # Run!
-adb -s $id shell LD_LIBRARY_PATH=$dir $dir/$bin $args "$@"
+#adb -s $id shell LD_LIBRARY_PATH=$dir $dir/$bin $args "$@"
+adb -s $id shell LD_LIBRARY_PATH=$dir $dir/$bin $args -S
 
 # Clean up
 #adb shell rm -r $dir

@@ -16,11 +16,12 @@ angular.module('aptWebApp')
                         //console.log(nodeIP)
                         var wsUrl = 'ws://' + nodeIP + ':9002/' + deviceID;
                         var ws = new WebSocket(wsUrl);
+                        scope.screenWS=ws;
                         //ws.binaryType = 'blob';
 
-                        // ws.onclose = function() {
-                        //     console.log('onclose');
-                        // };
+                        ws.onclose = function() {
+                            console.log('onclose');
+                        };
                         //screen display
                         ws.onerror = function() {
                             console.log('onerror');
@@ -64,7 +65,6 @@ angular.module('aptWebApp')
                                 lastX = event.layerX - event.currentTarget.offsetLeft;
                                 lastY = event.layerY - event.currentTarget.offsetTop;
                             }
-
                             drawing = true;
                         });
                         // element.bind('mousemove', function(event) {

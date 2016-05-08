@@ -12,6 +12,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"time"
 
 	"golang.org/x/net/websocket"
 )
@@ -30,15 +31,56 @@ type Banner struct {
 
 var isRunning bool = true
 
-const MAX_CHUNK = 1024
+const MAX_CHUNK = 2048
 const WS_PORT = ":9002"
 const PORT_START = 1711
 const PORT_END = 1720
 const PORT_FREE = "free"
 const SCREEN_SIZE = 500
 
+type DevWS struct {
+	id       string
+	isNeeded bool
+	ws       *websocket.Conn
+	lock     *sync.Mutex
+}
+
+func CreateDevWS(id string) *DevWS {
+	return &DevWS{id, false, new(websocket.Conn), new(sync.Mutex)}
+}
+
+func (this *DevWS) takeWS(ws *websocket.Conn) {
+	this.lock.Lock()
+	defer this.lock.Unlock()
+	if this.isNeeded && ws != this.ws {
+		this.ws.Close()
+	}
+	this.isNeeded = true
+	this.ws = ws
+}
+func (this *DevWS) freeWS(ws *websocket.Conn) {
+	this.lock.Lock()
+	defer this.lock.Unlock()
+	ws.Close()
+	if this.ws == ws {
+		this.isNeeded = false
+	}
+}
+
+func (this *DevWS) send(frame []byte) {
+	this.lock.Lock()
+	defer this.lock.Unlock()
+	if len(frame) > 0 && this.isNeeded {
+		err := websocket.Message.Send(this.ws, frame)
+		if err != nil {
+			log.Println("Send frame error", err)
+		}
+	}
+}
+
 type MiniPortManager struct {
 	portMap map[int]string
+	wsMap   map[string]*DevWS
 	lock    *sync.Mutex
 }
 
@@ -49,7 +91,8 @@ func GetMiniPortManager() *MiniPortManager {
 	for i := PORT_START; i <= PORT_END; i++ {
 		portMap[i] = PORT_FREE
 	}
-	return &MiniPortManager{portMap, new(sync.Mutex)}
+	wsMap := make(map[string]*DevWS)
+	return &MiniPortManager{portMap, wsMap, new(sync.Mutex)}
 }
 
 func (this *MiniPortManager) getPort(id string) int {
@@ -85,6 +128,28 @@ func (this *MiniPortManager) freePort(id string) {
 	}
 }
 
+func (this *MiniPortManager) addDevWS(id string, devws *DevWS) {
+	this.lock.Lock()
+	defer this.lock.Unlock()
+	this.wsMap[id] = devws
+}
+
+func (this *MiniPortManager) getDevWS(id string) (*DevWS, bool) {
+	this.lock.Lock()
+	defer this.lock.Unlock()
+	devWS, ex := this.wsMap[id]
+	return devWS, ex
+}
+
+func (this *MiniPortManager) deleteDevWS(id string) {
+	this.lock.Lock()
+	defer this.lock.Unlock()
+	_, ex := this.wsMap[id]
+	if ex {
+		delete(this.wsMap, id)
+	}
+}
+
 //start http server when the slave start
 func startWebSocket() {
 	//http.Handle("/", http.FileServer(http.Dir(".")))
@@ -98,27 +163,47 @@ func startWebSocket() {
 //when a device is miss
 func stopMinicap(id string) {
 	portManager.freePort(id)
+	portManager.deleteDevWS(id)
 }
 
-//when a new device is connected
+//when a new device is connected, start minicap server in the device and read the images data
 func startMinicap(id, resolution string) {
 	port := portManager.allocatePort(id)
 	if port == -1 {
 		log.Println("Port is not enough for", id)
 		return
 	}
+	portManager.addDevWS(id, CreateDevWS(id))
+	defer stopMinicap(id)
+
+	//forward port
 	ps := strconv.Itoa(port)
 	out := comm.ExeCmd(getADBPath() + " -s " + id + " forward tcp:" + ps + " localabstract:minicap")
 	if len(out) > 0 {
 		log.Println(out)
-		portManager.freePort(id)
 		return
 	}
-	//log.Println("Start minicap on", port, " for ", id)
+
 	//regist this device in websocket server
 	registDeviceInWS(id)
+
 	//run minicap in the device
-	runMCinDevice(id, resolution)
+	cmd, err := runMCinDeviceCmd(id, resolution)
+	if err != nil {
+		log.Println("Minicap cmd create err", err)
+		return
+	}
+	cmd.Start()
+	defer func() {
+		err = cmd.Process.Kill()
+		if err != nil {
+			log.Println("process kill err", err)
+		}
+	}()
+	time.Sleep(time.Second)
+
+	log.Println("Start minicap on", port, " for ", id)
+	sendImage(id, strconv.Itoa(port))
 }
 
 //run minicap in device
@@ -181,7 +266,6 @@ func registDeviceInWS(id string) {
 
 //when a new client connet to
 func clientHandler(ws *websocket.Conn) {
-	defer ws.Close()
 	id := ws.Request().URL.Path
 	id = strings.TrimPrefix(id, "/")
 	log.Println("new client connect to", id)
@@ -191,48 +275,17 @@ func clientHandler(ws *websocket.Conn) {
 		log.Println("This device is not connected", id)
 		return
 	}
-	port := portManager.getPort(id)
-	if port < 0 {
-		log.Println("Minicap cannot run in this device", id)
+
+	devWS, ex := portManager.getDevWS(id)
+	if !ex {
+		log.Println("Device websocket information dosenot exist", id)
 		return
 	}
-
-	//	cmd, err := runMCinDeviceCmd(id, dev.Info.Resolution)
-	//	if err != nil {
-	//		log.Println("Minicap cmd create err", err)
-	//		return
-	//	}
-	//	cmd.Start()
-	//	defer cmd.Process.Kill()
-	//	time.Sleep(time.Second)
-
-	ps := strconv.Itoa(port)
-	//connect to device
-	tcpAddr, err := net.ResolveTCPAddr("tcp", "localhost:"+ps)
-	if err != nil {
-		log.Println(err)
-		return
-	}
-	conn, err := net.DialTCP("tcp4", nil, tcpAddr)
-	if err != nil {
-		log.Println(err)
-		return
-	}
-
-	defer func() {
-		err = conn.Close()
-		if err != nil {
-			log.Println("conn close err", err)
-		}
-	}()
-
-	reader := bufio.NewReader(conn)
-	go sendImage(ws, reader)
+	//take up this device
+	devWS.takeWS(ws)
+	defer devWS.freeWS(ws)
 
 	getEvent(ws, id, dev.Info.Resolution)
-	//start send bytes to websocket
-	//conn.CloseRead()
-	//conn.CloseWrite()
 }
 
 //get UI event from client
@@ -293,13 +346,62 @@ func getEvent(ws *websocket.Conn, id, resolution string) {
 			y2 = int(zoom * float64(y2))
 			cmd := getADBPath() + " -s " + id + " shell input swipe " + strconv.Itoa(x1) + " " + strconv.Itoa(y1) + " " + strconv.Itoa(x2) + " " + strconv.Itoa(y2)
 			comm.ExeCmd(cmd)
+		} else if len(xy) == 1 {
+			cmd := getADBPath() + " -s " + id + " shell input keyevent "
+			isKey := true
+			switch xy[0] {
+			case "back":
+				cmd += "4"
+			case "home":
+				cmd += "3"
+			case "menu":
+				cmd += "1"
+			case "power":
+				cmd += "26"
+			case "reboot":
+				cmd = getADBPath() + " -s " + id + " reboot "
+			default:
+				isKey = false
+				log.Println("Get event", xy[0])
+			}
+			if isKey {
+				comm.ExeCmd(cmd)
+			}
+		} else {
+			log.Println("Get event", xy)
 		}
-		log.Println("Get event", evtString)
+
 	}
 }
 
 //send images to client
-func sendImage(ws *websocket.Conn, reader *bufio.Reader) {
+func sendImage(id, port string) {
+
+	//connect to device minicap
+	tcpAddr, err := net.ResolveTCPAddr("tcp", "localhost:"+port)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	conn, err := net.DialTCP("tcp4", nil, tcpAddr)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	defer func() {
+		err = conn.Close()
+		if err != nil {
+			log.Println("conn close err", err)
+		}
+	}()
+	reader := bufio.NewReader(conn)
+	//get device websocket information
+	devWS, ex := portManager.getDevWS(id)
+	if !ex {
+		log.Println("device websocket not exist")
+		return
+	}
+
 	readBannerBytes := 0
 	bannerLength := 2
 	readFrameBytes := 0
@@ -395,12 +497,8 @@ func sendImage(ws *websocket.Conn, reader *bufio.Reader) {
 					}
 
 					//log.Println("Get a frame len=", frameBody.Len())
-
-					err = websocket.Message.Send(ws, frameBody.Bytes())
-					if err != nil {
-						log.Println("Send frame error", le, err)
-						return
-					}
+					//send frame bytes to websocket
+					devWS.send(frameBody.Bytes())
 
 					cursor += frameBodyLength
 					frameBodyLength = 0

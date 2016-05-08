@@ -69,6 +69,8 @@ func (m *DeviceManager) updateDevInfo() {
 	}
 
 	m.deviceLock.Lock()
+	defer m.deviceLock.Unlock()
+
 	for id, ndev := range newMap {
 		dev, ok := m.deviceMap[id]
 		//old device
@@ -87,16 +89,15 @@ func (m *DeviceManager) updateDevInfo() {
 		}
 	}
 	m.deviceMap = newMap
-	m.deviceLock.Unlock()
 }
 
 func (m *DeviceManager) getDeviceInfo() map[string]comp.Device {
 	devices := make(map[string]comp.Device)
 	m.deviceLock.Lock()
+	defer m.deviceLock.Unlock()
 	for key, v := range m.deviceMap {
 		devices[key] = v
 	}
-	m.deviceLock.Unlock()
 	return devices
 }
 
@@ -111,6 +112,16 @@ func (m *DeviceManager) getDevice(id string) (comp.Device, error) {
 		return dev, nil
 	}
 	return device, err
+}
+
+func (m *DeviceManager) removeDevice(id string) {
+	m.deviceLock.Lock()
+	defer m.deviceLock.Unlock()
+
+	_, ex := m.deviceMap[id]
+	if ex {
+		delete(m.deviceMap, id)
+	}
 }
 
 func (m *DeviceManager) giveDevice(id string) bool {
@@ -128,10 +139,11 @@ func (m *DeviceManager) giveDevice(id string) bool {
 
 func (m *DeviceManager) reclaim(id string) {
 	m.deviceLock.Lock()
+	defer m.deviceLock.Unlock()
+
 	dev, ex := m.deviceMap[id]
 	if ex {
 		dev.State = comp.DEVICE_FREE
 		m.deviceMap[id] = dev
 	}
-	m.deviceLock.Unlock()
 }
