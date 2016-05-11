@@ -1,14 +1,17 @@
 <div class="animated fadeInRight">
     <div id="backTask">
         <a id="backUrl" ui-sref="main.slaves">
-            <i class="glyphicon glyphicon-arrow-left"></i>Slaves
+            <i class="glyphicon glyphicon-arrow-left" translate="NODES">Nodes</i>
         </a>
     </div>
 
     <div class="wrapper wrapper-content">
         <div class="ibox-title">
-            <h2>
-                Devices | ({{devices.length}}) |
+            <h2 translate="DEVICES">
+                Devices
+            </h2>
+            <h2 >
+                ({{devices.length}}) |
                 {{ip}}
             </h2>
         </div>
@@ -30,14 +33,14 @@
                 <table class="table table-striped tasks">
                     <thead>
                         <tr>
-                            <th>Device ID</th>
-                            <th>Manufacturers</th>
-                            <th>Model</th>
-                            <th>BuildVersion</th>
-                            <th>API</th>
-                            <th>CPU Abi</th>
-                            <th>Resolution</th>
-                            <th>Status</th>
+                            <th translate="DEVICE_ID">Device ID</th>
+                            <th translate="DEVICE_MANU">Manufacturers</th>
+                            <th translate="DEVICE_MODEL">Model</th>
+                            <th translate="DEVICE_BV">Build Version</th>
+                            <th translate="DEVICE_API">API</th>
+                            <th translate="DEVICE_CPU">CPU Abi</th>
+                            <th translate="DEVICE_RESOLUTION">Resolution</th>
+                            <th translate="DEVICE_STATUS">Status</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -84,11 +87,11 @@
                 <table class="table table-striped tasks">
                     <thead>
                         <tr>
-                            <th>Device ID</th>
-                            <th>Job ID</th>
-                            <th>Start Time</th>
-                            <th>Finish Time</th>
-                            <th>Status</th>
+                            <th translate="DEVICE_ID">Device ID</th>
+                            <th translate="JOB_ID">Job ID</th>
+                            <th translate="JOB_START_TIME">Start Time</th>
+                            <th translate="JOB_FINISH_TIME">Finish Time</th>
+                            <th translate="JOB_STATUS">Status</th>
                         </tr>
                     </thead>
                     <tbody>

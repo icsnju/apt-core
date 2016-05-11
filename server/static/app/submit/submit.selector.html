@@ -17,13 +17,13 @@
     <table class="table table-striped tasks">
         <thead>
             <tr>
-                <th>ID</th>
-                <th>Manufacturers</th>
-                <th>Model</th>
-                <th>BuildVersion</th>
-                <th>API</th>
-                <th>CPU Abi</th>
-                <th>Resolution</th>
+                <th translate="DEVICE_ID">ID</th>
+                <th translate="DEVICE_MANU">Manufacturers</th>
+                <th translate="DEVICE_MODEL">Model</th>
+                <th translate="DEVICE_BV">Build Version</th>
+                <th translate="DEVICE_API">API</th>
+                <th translate="DEVICE_CPU">CPU Abi</th>
+                <th translate="DEVICE_RESOLUTION">Resolution</th>
                 <th><input type="checkbox" ng-model="select.checkAll" ng-click="clickTopBox()"></th>
             </tr>
         </thead>
@@ -44,7 +44,6 @@
 
 <div class="form-group row text-center">
     <a ui-sref="main.submit.ok" class="btn btn-info" ng-click="checkEmpty()">
-        Next Step
-        <span class="glyphicon glyphicon-circle-arrow-right"></span>
+        <span class="glyphicon glyphicon-circle-arrow-right" translate="NEXT_STEP"></span>
     </a>
 </div>

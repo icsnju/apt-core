@@ -1,7 +1,7 @@
 <div class="animated fadeInRight">
     <div id="backTask">
         <a id="backUrl" ui-sref="main.slaveDetail({id:nodeIP})">
-            <i class="glyphicon glyphicon-arrow-left"></i>Node
+            <i class="glyphicon glyphicon-arrow-left" translate="NODE">Node</i>
         </a>
     </div>
     <div class="row padContent">
@@ -29,21 +29,21 @@
             <div class="detailContent animated fadeInRight">
                 <ul class="detail">
                     <dl class="task-dl dl-horizontal">
-                        <dt>Device ID:</dt>
+                        <dt translate="DEVICE_ID">Device ID</dt>
                         <dd>{{device.Info.Id}}</dd>
-                        <dt>Manufacturers:</dt>
+                        <dt translate="DEVICE_MANU">Manufacturers</dt>
                         <dd>{{device.Info.Manu}}</dd>
-                        <dt>Model:</dt>
+                        <dt translate="DEVICE_MODEL">Model</dt>
                         <dd>{{device.Info.Model}}</dd>
-                        <dt>API:</dt>
+                        <dt translate="DEVICE_API">API</dt>
                         <dd>{{device.Info.Api}}</dd>
-                        <dt>Build Version:</dt>
+                        <dt translate="DEVICE_BV">Build Version</dt>
                         <dd>{{device.Info.BuildVersion}}</dd>
-                        <dt>CPU Abi:</dt>
+                        <dt translate="DEVICE_CPU">CPU Abi</dt>
                         <dd>{{device.Info.CpuAbi}}</dd>
-                        <dt>Resolution:</dt>
+                        <dt translate="DEVICE_RESOLUTION">Resolution</dt>
                         <dd>{{device.Info.Resolution}}</dd>
-                        <dt>Status:</dt>
+                        <dt translate="DEVICE_STATUS">Status</dt>
                         <dd>{{getState(device.State)}}</dd>
                     </dl>
                 </ul>

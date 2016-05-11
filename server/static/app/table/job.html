@@ -3,21 +3,24 @@
         <div class="col-sm-12 animated fadeInRight">
             <div class="ibox">
                 <div class="ibox-title">
+                    <h2 translate="JOBS">
+                        Jobs
+                    </h2>
                     <h2>
-                        Jobs | ({{jobs.length}})
+                        ({{jobs.length}})
                     </h2>
                 </div>
                 <div class="ibox-content mailbox-main">
                     <div class="clearfix table-tools">
                         <span class="pull-left">
-                            <button id="task-btn" class="btn btn-block btn-primary compose-mail" ui-sref="main.submit.frame">Add Job</button>
+                            <button id="task-btn" class="btn btn-block btn-primary compose-mail" ui-sref="main.submit.frame" translate="ADD_JOB">Add Job</button>
                         </span>
                         <div class="pull-right" id="input-btn">
                             <div class="input-group mail-search">
                                 <input type="text" class="form-control input-sm" ng-model="searchKey" placeholder="Search all jobs...">
                             </div>
 
-                            <div class="keep-open btn-group" >
+                            <div class="keep-open btn-group">
                                 <button type="button" id="status-btn" class="btn btn-default" title="refresh" ng-click="refresh()">
                                     <i class="glyphicon glyphicon-refresh icon-refresh"></i>
                                 </button>
@@ -56,12 +59,12 @@
                         <table class="table table-striped tasks">
                             <thead>
                                 <tr>
-                                    <th>ID</th>
-                                    <th>Start Time</th>
-                                    <th>Framework</th>
-                                    <th>Devices</th>
-                                    <th>Status</th>
-                                    <th>Options</th>
+                                    <th translate="JOB_ID">ID</th>
+                                    <th translate="JOB_START_TIME">Start Time</th>
+                                    <th translate="JOB_FRAME">Framework</th>
+                                    <th translate="JOB_DEVICE">Devices</th>
+                                    <th translate="JOB_STATUS">Status</th>
+                                    <th translate="JOB_OPTIONS">Options</th>
                                 </tr>
                             </thead>
                             <tbody>

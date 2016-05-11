@@ -1,46 +1,61 @@
 <div class="sidebar">
-  <div class="sidebar-inner" id="side-menu">
-    <div class="brand-top">
-      <div class="brand">
-        <a href="">
-          <img class="change-img" src="static/assets/images/logo1.png" alt="">
-        </a>
-      </div>
+    <div class="sidebar-inner" id="side-menu">
+        <div class="brand-top">
+            <div class="brand">
+                <a href="">
+                    <img class="change-img" src="static/assets/images/logo1.png" alt="">
+                </a>
+            </div>
+        </div>
+        <div class="navbar">
+            <a class="navbar-minimalize">
+                <span class="navbar-minimalize-inner">
+                    <span class="si-menu"></span>
+                </span>
+            </a>
+            <ul class="nav">
+                <li ui-sref-active="active">
+                    <a ui-sref=".slaves">
+                        <span class="si-cloud"></span>
+                        <span class="nav-label" translate="NAV_DASHBOARD">Dashboard</span>
+                    </a>
+                </li>
+                <li ui-sref-active="active">
+                    <a ui-sref=".jobs">
+                        <span class="si-browser"></span>
+                        <span class="nav-label" translate="NAV_JOBS">Jobs</span>
+                    </a>
+                </li>
+                <li ui-sref-active="active">
+                    <a ui-sref=".submit.frame">
+                        <span class="si-plus"></span>
+                        <span class="nav-label" translate="NAV_ADD">Add</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
     </div>
-    <div class="navbar">
-      <a class="navbar-minimalize">
-        <span class="navbar-minimalize-inner">
-          <span class="si-menu"></span>
-        </span>
-      </a>
-      <ul class="nav">
-        <li ui-sref-active="active">
-          <a ui-sref=".slaves">
-            <span class="si-cloud"></span>
-            <span class="nav-label">Dashboard</span>
-          </a>
-        </li>
-        <li ui-sref-active="active">
-          <a ui-sref=".jobs">
-            <span class="si-browser"></span>
-            <span class="nav-label">Jobs</span>
-          </a>
-        </li>
-        <li ui-sref-active="active">
-          <a ui-sref=".submit.frame">
-            <span class="si-plus"></span>
-            <span class="nav-label">Add</span>
-          </a>
-        </li>
-      </ul>
-    </div>
-  </div>
 </div>
 <!--[if lt IE 7]> <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p> <![endif]-->
 
 <div class="main-wrapper" id="main-wrapper">
-  <div class="header">
-    <!-- <h3 class="tab-title">Task Manager | </h3> -->
-  </div>
-  <div ui-view></div>
+    <div class="header">
+        <ul class="nav navbar-nav navbar-right">
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                    <i class="head-font fa fa-language" aria-hidden="true"></i>
+                    <span class="head-font caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a href="#" ng-click="changeLanguage('cn')">中文</a>
+                    </li>
+                    <li>
+                        <a href="#" ng-click="changeLanguage('en')">English</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <div ui-view></div>
 </div>

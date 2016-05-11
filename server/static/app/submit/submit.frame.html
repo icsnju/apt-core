@@ -1,5 +1,5 @@
 <div class="form-group">
-    <label for="framwork">Test Framework Select:</label>
+    <label for="framwork" translate="FRAMEWORK_SELECT">Test Framework Select</label>
     <select class="form-control" name="framework" ng-model="framework.name">
         <option value="monkey">Monkey</option>
         <option value="robotium">Robotium</option>
@@ -8,39 +8,36 @@
 <!-- <span ng-bind="framework|json"></span> -->
 <div ng-show="framework.name=='monkey'">
     <div class="form-group">
-        <label for="file">Application Input:</label>
+        <label for="file" translate="APP_INPUT">Application Input</label>
         <button class="btn btn-primary" ngf-select ng-model="monkey.file" name="file" required>
-            File
-            <span class="glyphicon glyphicon-file"></span>
+            <span class="glyphicon glyphicon-file" translate="FILE">File</span>
         </button>
         <p class="file-p help-block">{{monkey.file.name}}</p>
     </div>
 
     <div class="form-group">
-        <label for="pkg">Package Name:</label>
+        <label for="pkg" translate="PACKAGE_NAME">Package Name</label>
         <input type="text" name="pkg" class="form-control" placeholder="com.example.app" ng-model="monkey.pkg" ng-maxlength="128" required>
     </div>
 
     <div class="form-group">
-        <label for="arg">Arguments:</label>
+        <label for="arg" translate="ARG">Arguments</label>
         <input type="text" name="arg" class="form-control" placeholder=" -v 100" ng-model="monkey.arg" ng-maxlength="128" required>
     </div>
 </div>
 
 <div ng-show="framework.name=='robotium'">
     <div class="form-group">
-        <label for="app">Application Input:</label>
+        <label for="app" translate="APP_INPUT">Application Input</label>
         <button class="btn btn-primary" ngf-select ng-model="robotium.app" name="app" required>
-            App
-            <span class="glyphicon glyphicon-file"></span>
+            <span class="glyphicon glyphicon-file" translate="FILE"></span>
         </button>
         <p class="file-p help-block">{{robotium.app.name}}</p>
     </div>
     <div class="form-group">
-        <label for="test">Test File Input:</label>
+        <label for="test" translate="TEST_INPUT">Test File Input</label>
         <button class="btn btn-primary" ngf-select ng-model="robotium.test" name="test" required>
-            Robotium
-            <span class="glyphicon glyphicon-file"></span>
+            <span class="glyphicon glyphicon-file" translate="FILE"></span>
         </button>
         <p class="file-p help-block">{{robotium.test.name}}</p>
     </div>
@@ -48,7 +45,6 @@
 
 <div class="form-group row text-center">
     <a ui-sref="main.submit.selector" class="btn btn-info">
-        Next Step
-        <span class="glyphicon glyphicon-circle-arrow-right"></span>
+        <span class="glyphicon glyphicon-circle-arrow-right" translate="NEXT_STEP">Next Step</span>
     </a>
 </div>
