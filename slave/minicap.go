@@ -67,13 +67,26 @@ func (this *DevWS) freeWS(ws *websocket.Conn) {
 	}
 }
 
-func (this *DevWS) send(frame []byte) {
+//send screen image frame
+func (this *DevWS) sendFrame(frame []byte) {
 	this.lock.Lock()
 	defer this.lock.Unlock()
 	if len(frame) > 0 && this.isNeeded {
 		err := websocket.Message.Send(this.ws, frame)
 		if err != nil {
 			log.Println("Send frame error", err)
+		}
+	}
+}
+
+//send log
+func (this *DevWS) sendLog(content []byte) {
+	this.lock.Lock()
+	defer this.lock.Unlock()
+	if len(content) > 0 && this.isNeeded {
+		err := websocket.Message.Send(this.ws, string(content))
+		if err != nil {
+			log.Println("Send log error", err)
 		}
 	}
 }
@@ -200,13 +213,17 @@ func startMinicap(id, resolution string) {
 			log.Println("process kill err", err)
 		}
 	}()
-	time.Sleep(time.Second)
+	time.Sleep(2 * time.Second)
 
+	//start get log and sent the log
+	startLogcat(id)
+
+	//start to send the image buffer
 	log.Println("Start minicap on", port, " for ", id)
-	sendImage(id, strconv.Itoa(port))
+	parserImage(id, strconv.Itoa(port))
 }
 
-//run minicap in device
+//get command for running minicap in device
 func runMCinDeviceCmd(id, resolution string) (*exec.Cmd, error) {
 	//defer portManager.freePort(id)
 	var command *exec.Cmd
@@ -374,8 +391,46 @@ func getEvent(ws *websocket.Conn, id, resolution string) {
 	}
 }
 
+//start logcat and send the content to websocket
+func startLogcat(id string) {
+	devWS, ex := portManager.getDevWS(id)
+	if !ex {
+		log.Println("device websocket not exist")
+		return
+	}
+
+	cmd := comm.CreateCmd(getADBPath() + " -s " + id + " logcat -v time")
+
+	// Create stdout, stderr streams of type io.Reader
+	stdout, err := cmd.StdoutPipe()
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	// Start command
+	err = cmd.Start()
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	go func() {
+		read := bufio.NewReader(stdout)
+		for {
+			content, _, err := read.ReadLine()
+			if err != nil {
+				log.Println(err)
+				break
+			}
+			if len(content) > 0 {
+				devWS.sendLog(content)
+			}
+		}
+	}()
+}
+
 //send images to client
-func sendImage(id, port string) {
+func parserImage(id, port string) {
 
 	//connect to device minicap
 	tcpAddr, err := net.ResolveTCPAddr("tcp", "localhost:"+port)
@@ -498,7 +553,7 @@ func sendImage(id, port string) {
 
 					//log.Println("Get a frame len=", frameBody.Len())
 					//send frame bytes to websocket
-					devWS.send(frameBody.Bytes())
+					devWS.sendFrame(frameBody.Bytes())
 
 					cursor += frameBodyLength
 					frameBodyLength = 0

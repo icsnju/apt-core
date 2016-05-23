@@ -5,6 +5,7 @@ angular.module('aptWebApp')
         $scope.deviceID = $stateParams.id;
         $scope.nodeIP = '';
         $scope.device = {};
+    
         //the status of device
         $scope.getState = function(state) {
             if (state == 0) {

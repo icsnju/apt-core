@@ -1,3 +1,8 @@
 .screen-canvas {
     border: 1px solid;
 }
+.aps-log {
+    height: 400px !important;
+    overflow: scroll;
+    margin-top: 20px;
+}

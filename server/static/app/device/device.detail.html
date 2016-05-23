@@ -50,4 +50,19 @@
             </div>
         </div>
     </div>
+    <div class="row padContent">
+        <div class="col-md-8 col-md-offset-2 col-sm-12">
+            <div class="detailContent animated fadeInRight aps-log">
+                <table class="table">
+                    <tbody>
+                        <tr ng-repeat="log in logs">
+                            <td>{{log.kind}}</td>
+                            <td>{{log.date}}</td>
+                            <td>{{log.content}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>

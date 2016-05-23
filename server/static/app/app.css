@@ -817,9 +817,7 @@ h1, h2, h3, h4, h5, p {
 .table-tools {
     margin: 10px;
 }
-table.tasks tr td {
-    font-weight: 200;
-}
+
 .mail-options {
     font-size: 20px;
     color: #337ab7 !important;
