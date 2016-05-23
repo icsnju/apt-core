@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('aptWebApp')
-    .controller('JobCtrl', function($scope, $http, $window) {
+    .controller('JobCtrl', function($scope, $http, $window, $interval) {
         $scope.jobs = [];
         $scope.searchKey = '';
         $scope.statusKey = {};
@@ -127,8 +127,16 @@ angular.module('aptWebApp')
         }
 
         $scope.refresh();
+
+        var interval = $interval(function() {
+            $scope.refresh();
+        }, 1000);
+
+        $scope.$on('$destroy', function() {
+            $interval.cancel(interval);
+        });
     })
-    .controller('DetailCtrl', function($scope, $http, $stateParams, $window) {
+    .controller('DetailCtrl', function($scope, $http, $stateParams, $window, $interval) {
         $scope.job = {};
         $scope.tasks = [];
         $scope.searchKey = '';
@@ -151,6 +159,13 @@ angular.module('aptWebApp')
         }
 
         $scope.refresh();
+        var interval = $interval(function() {
+            $scope.refresh();
+        }, 1000);
+
+        $scope.$on('$destroy', function() {
+            $interval.cancel(interval);
+        });
 
         //download result file frome server
         $scope.downloadResult = function(did, index) {

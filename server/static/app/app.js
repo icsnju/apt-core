@@ -8,7 +8,8 @@ angular.module('aptWebApp', [
         'validation.match',
         'ngFileUpload',
         'ngAnimate',
-        'pascalprecht.translate'
+        'pascalprecht.translate',
+        'luegg.directives'
     ])
     .config(function($urlRouterProvider, $locationProvider) {
         $urlRouterProvider

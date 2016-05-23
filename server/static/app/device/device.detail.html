@@ -7,7 +7,7 @@
     <div class="row padContent">
         <div class="col-md-3 col-md-offset-2 col-sm-12">
             <div class="detailContent animated fadeInRight">
-                <canvas class="screen-canvas" draw-screen devid="{{deviceID}}"></canvas>
+                <canvas class="screen-canvas" draw-screen></canvas>
                 <button ng-click="deviceButton('back')" title="back">
                     <i class="fa fa-arrow-circle-o-left" aria-hidden="true"></i>
                 </button>
@@ -52,8 +52,15 @@
     </div>
     <div class="row padContent">
         <div class="col-md-8 col-md-offset-2 col-sm-12">
-            <div class="detailContent animated fadeInRight aps-log">
+            <div class="detailContent animated fadeInRight aps-log" scroll-glue>
                 <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Level</th>
+                            <th class="thead-time">Time</th>
+                            <th>Log</th>
+                        </tr>
+                    </thead>
                     <tbody>
                         <tr ng-repeat="log in logs">
                             <td>{{log.kind}}</td>
