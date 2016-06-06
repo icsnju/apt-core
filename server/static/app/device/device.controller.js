@@ -109,6 +109,17 @@ angular.module('aptWebApp')
                 // element.bind('mousemove', function(event) {
                 //     console.log(event);
                 // });
+                var sendme = function sendEvent(x1, y1, x2, y2) {
+                    var dist = (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2)
+                    if (dist < 4) {
+                        var evt = x1 + ',' + y1;
+                        ws.send(evt)
+                    } else {
+                        var evt = x1 + ',' + y1 + ',' + x2 + ',' + y2;
+                        ws.send(evt);
+                    }
+                };
+
                 element.bind('mouseup', function(event) {
                     if (drawing) {
                         var currentX;
@@ -121,21 +132,10 @@ angular.module('aptWebApp')
                             currentX = event.layerX - event.currentTarget.offsetLeft;
                             currentY = event.layerY - event.currentTarget.offsetTop;
                         }
-                        sendEvent(lastX, lastY, currentX, currentY);
+                        sendme(lastX, lastY, currentX, currentY);
                         drawing = false;
                     }
                 });
-                //send UI event
-                function sendEvent(x1, y1, x2, y2) {
-                    var dist = (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2)
-                    if (dist < 4) {
-                        var evt = x1 + ',' + y1;
-                        ws.send(evt)
-                    } else {
-                        var evt = x1 + ',' + y1 + ',' + x2 + ',' + y2;
-                        ws.send(evt);
-                    }
-                }
 
             }
         }, function(response) {
