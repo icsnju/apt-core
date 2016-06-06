@@ -1,6 +1,7 @@
 ## APSARAS
 
-### Introduction  
+![image](logo.png)
+
 APSARAS (Allocation of PhySicAl devices foR Android teSting) is a distributed testing platform for Android apps.  
 
 ### Dependency  
@@ -14,12 +15,12 @@ APSARAS (Allocation of PhySicAl devices foR Android teSting) is a distributed te
 4. `Android SDK` in each node.  
 
 5. Install Godep:  
- 
+
 	```
 	$ go get github.com/tools/godep`  
 	```   
 	Put godep in envionment variables. In `Apsaras/`, get dependences from the Internet:   
-	
+
 	```
 	$ godep restore
 	$ godep save ./...
@@ -31,20 +32,20 @@ APSARAS (Allocation of PhySicAl devices foR Android teSting) is a distributed te
 	```
 	$ get [package]
 	$ godep save ./...
-	```	
-	
+	```
+
 ### Deployment  
 
 #### Build executable files
 
 In `server/` or `slave/`:    
-  
+
 ```
-$ go build 
+$ go build
 ```  
 Executable files (server, slave) will be generated in relevant files.   
 
-#### Configuration/run 
+#### Configuration/run
 
 In `server/`, `slave/`diretories, some configuration files should be configured correctly. You can refer **Apsaras Run** for more details in next section.
 
@@ -65,7 +66,7 @@ In this image, the following tools are installed:
 3. **MooseFS:** We use moosefs as our distributed file system. You may use the following command to start the moosefs.  
 
 In file `/etc/mfs`, you will find the configuration file for moosefs, so configure them with proper arguments. Most of configurations are default values. While in `mfschunkserver.cfg`, we set `MASTER_HOST = mfsmaster`, `mfsmaster` defined in `/etc/hosts` ( we use `--net host` here). In `mfshdd.cfg`, we add line `/home/aps/mfs` here. Of course, you can change the configurations to whatever you want.
- 
+
 Start mfsmaster in one mfs master node:  
 
 ```
@@ -92,15 +93,15 @@ Mount mfs file to local file, you can use this local file to share files now. We
 ```
 $ sudo mfsmount /home/aps/share -H mfsmaster
 ```   
-You can run mfsmaster and mfschunkserver in standalone containers, but you have to mount the correct file, which can be accessed by Apsaras, to the mfsmaster. 
-   
+You can run mfsmaster and mfschunkserver in standalone containers, but you have to mount the correct file, which can be accessed by Apsaras, to the mfsmaster.
+
 4. **MongoDB** MongoDB is not in this image, so you should start a mongodb server in your host or in a container ([tutum/mongodb](https://hub.docker.com/r/tutum/mongodb/)).   
 
 ```
 docker run -d -p 27017:27017 -p 28017:28017 -e AUTH=no tutum/mongodb   
 ```
 
-### Apsaras Run 
+### Apsaras Run
 In file `/home/aps/apsaras/`, there are two files, `server` and `slave`. You should run server in one master node and slave in slave nodes that are conneted with many Android devices.  
 
 #### Server   
@@ -144,7 +145,7 @@ It is time to run server:
 ```
 ./server
 ```     
-Now you can get your web client in http://localhost:8023/jobs. 
+Now you can get your web client in http://localhost:8023/jobs.
 
 #### Slave  
 Same with the server, you should config it.   
@@ -169,17 +170,3 @@ You will see all of your connected Android devices in the web client.
 
 #### Usage   
 You can run server and slave in standalone containers and physical computers. Apsaras is easy to use. With a beautiful web client, you will enjoy the features of Apsaras :).
-
-
-
-
-
-
-
-  
-
-
-
-    
-
-
